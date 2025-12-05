@@ -130,6 +130,10 @@
   .delay-400 { animation-delay: 400ms; }
   .delay-500 { animation-delay: 500ms; }
   .delay-600 { animation-delay: 600ms; }
+
+  .connection-line {
+    transition: stroke-dashoffset 0.8s ease-out;
+  }
 }
 
 @keyframes fadeInUp {

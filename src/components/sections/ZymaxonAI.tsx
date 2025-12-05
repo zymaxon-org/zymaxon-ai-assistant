@@ -38,7 +38,7 @@ const ZymaxonAI = () => {
   const { ref, isInView } = useInView({ threshold: 0.1 });
 
   return (
-    <section className="py-24 md:py-32 bg-secondary/30">
+    <section id="zymaxon-ai" className="py-24 md:py-32 bg-secondary/30">
       <div className="container px-4 md:px-6">
         <div 
           ref={ref}
