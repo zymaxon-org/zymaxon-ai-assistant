@@ -5,7 +5,7 @@ const Leadership = () => {
   const { ref, isInView } = useInView({ threshold: 0.2 });
 
   return (
-    <section className="py-24 md:py-32 bg-background">
+    <section id="leadership" className="py-24 md:py-32 bg-background">
       <div className="container px-4 md:px-6">
         <div 
           ref={ref}

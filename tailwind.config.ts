@@ -80,10 +80,30 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "spin-slow": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.3)" },
+          "50%": { boxShadow: "0 0 40px hsl(var(--primary) / 0.5)" },
+        },
+        "draw-line": {
+          from: { strokeDashoffset: "200" },
+          to: { strokeDashoffset: "0" },
+        },
+        "pulse-dot": {
+          "0%, 100%": { opacity: "0.6" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "spin-slow": "spin-slow 30s linear infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "draw-line": "draw-line 0.8s ease-out forwards",
+        "pulse-dot": "pulse-dot 1.5s ease-in-out infinite",
       },
     },
   },
