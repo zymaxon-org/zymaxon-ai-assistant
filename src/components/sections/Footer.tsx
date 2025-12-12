@@ -65,13 +65,14 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 group">
-              <div className="relative h-10 overflow-hidden rounded-lg">
+              <div className="relative h-12 overflow-hidden">
                 {/* Breathing glow */}
-                <div className="absolute inset-0 bg-primary/30 animate-breathe rounded-lg blur-md" />
+                <div className="absolute inset-0 bg-primary/30 animate-breathe blur-xl" />
                 <img 
                   src={zymaxonLogo} 
                   alt="Zymaxon" 
-                  className="h-full w-auto object-contain relative z-10 brightness-0 invert"
+                  className="h-full w-auto object-contain relative z-10"
+                  style={{ filter: 'brightness(0) invert(1)' }}
                 />
               </div>
             </div>
