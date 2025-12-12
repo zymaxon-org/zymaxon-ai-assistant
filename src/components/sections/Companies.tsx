@@ -1,6 +1,7 @@
-import { Store, ShoppingBag, Briefcase, Users, BookOpen, Newspaper, Sparkles } from "lucide-react";
+import { Store, Briefcase, Users, BookOpen, Newspaper, Sparkles } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 import { useState, useRef } from "react";
+import zymaxonPowered from "@/assets/zymaxon-powered.jpg";
 
 const companies = [
   {
@@ -9,13 +10,6 @@ const companies = [
     description: "A marketplace for properties, services, and bookings. Connect with verified providers and find exactly what you need.",
     icon: Store,
     aiFeatures: ["Smart search & discovery", "Personalized recommendations", "Fraud detection"]
-  },
-  {
-    name: "Vivesa Stores",
-    category: "E-commerce",
-    description: "Shop from thousands of verified sellers. Experience seamless online shopping with AI-powered personalization.",
-    icon: ShoppingBag,
-    aiFeatures: ["Visual search", "Size prediction", "Dynamic pricing"]
   },
   {
     name: "Vivesa Jobs",
@@ -103,13 +97,20 @@ const CompanyCard = ({ company, index, isInView }: CompanyCardProps) => {
         }`}
       />
 
-      {/* AI Badge with pulse */}
+      {/* Powered by Badge */}
       <div className="absolute top-4 right-4 z-10">
-        <div className={`flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium transition-all duration-300 ${
+        <div className={`relative flex items-center gap-1.5 px-2 py-1 rounded-full bg-primary/10 transition-all duration-300 overflow-hidden ${
           isHovered ? 'bg-primary/20 scale-105' : ''
         }`}>
-          <Sparkles className={`w-3 h-3 transition-all duration-300 ${isHovered ? 'animate-pulse' : ''}`} />
-          AI Powered
+          <img 
+            src={zymaxonPowered} 
+            alt="Powered by Zymaxon AI" 
+            className="h-4 w-auto object-contain"
+          />
+          {/* Shimmer on hover */}
+          <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent transition-opacity ${
+            isHovered ? 'opacity-100 animate-shimmer' : 'opacity-0'
+          }`} />
         </div>
       </div>
 
@@ -182,8 +183,42 @@ const Companies = () => {
   const { ref, isInView } = useInView({ threshold: 0.1 });
 
   return (
-    <section id="companies" className="py-24 md:py-32 bg-background">
-      <div className="container px-4 md:px-6">
+    <section id="companies" className="py-24 md:py-32 bg-background relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Gradient Blobs */}
+        <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.05)_0%,transparent_70%)] 
+          animate-float blur-3xl" />
+        <div className="absolute bottom-[10%] right-[15%] w-[350px] h-[350px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04)_0%,transparent_70%)] 
+          animate-float-delayed blur-3xl" />
+        
+        {/* Subtle Grid */}
+        <div className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `linear-gradient(hsl(var(--primary)) 1px, transparent 1px),
+                              linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px'
+          }}
+        />
+        
+        {/* Floating Particles */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 rounded-full bg-primary/20 animate-particle"
+            style={{
+              left: `${10 + (i * 12)}%`,
+              bottom: '-10px',
+              animationDelay: `${i * 1.5}s`,
+              animationDuration: `${12 + (i % 4) * 2}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="container px-4 md:px-6 relative z-10">
         <div 
           ref={ref}
           className={`text-center space-y-4 mb-16 transition-all duration-700 ${
@@ -199,7 +234,7 @@ const Companies = () => {
           </p>
         </div>
 
-        {/* Companies Grid */}
+        {/* Companies Grid - 5 items with special layout */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {companies.map((company, index) => (
             <CompanyCard

@@ -1,7 +1,8 @@
 import { useInView } from "@/hooks/useInView";
 import { useEffect, useState } from "react";
+import zymaxonSymbol from "@/assets/zymaxon-symbol.jpg";
 
-const platforms = ["Vivesa", "Stores", "Jobs", "Gigs", "Mentorship", "Newsroom"];
+const platforms = ["Vivesa", "Jobs", "Gigs", "Mentorship", "Newsroom"];
 
 const HowItWorks = () => {
   const { ref, isInView } = useInView({ threshold: 0.2 });
@@ -14,9 +15,9 @@ const HowItWorks = () => {
     }
   }, [isInView]);
 
-  // Calculate positions for 6 nodes around the center
+  // Calculate positions for 5 nodes around the center (72° spacing)
   const getNodePosition = (index: number, radius: number) => {
-    const angle = (index * 60 - 90) * (Math.PI / 180);
+    const angle = (index * 72 - 90) * (Math.PI / 180);
     return {
       x: Math.cos(angle) * radius,
       y: Math.sin(angle) * radius,
@@ -118,13 +119,19 @@ const HowItWorks = () => {
               <div className="w-[220px] h-[220px] sm:w-[270px] sm:h-[270px] md:w-[320px] md:h-[320px] rounded-full border-2 border-dashed border-primary/20 animate-spin-slow" />
             </div>
 
-            {/* Center Hub */}
+            {/* Center Hub with Logo */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-primary flex items-center justify-center shadow-lg animate-pulse-glow">
-                <div className="text-center">
-                  <span className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-primary-foreground">Z</span>
-                  <p className="text-[10px] sm:text-xs text-primary-foreground/80 font-medium">AI</p>
-                </div>
+              <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden animate-pulse-glow">
+                {/* Rotating glow ring */}
+                <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-primary via-primary/50 to-primary animate-spin-slow opacity-50" />
+                {/* Inner glow */}
+                <div className="absolute inset-0 rounded-full bg-primary/20 animate-breathe" />
+                {/* Logo Image */}
+                <img 
+                  src={zymaxonSymbol} 
+                  alt="Zymaxon AI" 
+                  className="w-full h-full object-cover relative z-10 rounded-full"
+                />
               </div>
             </div>
 
