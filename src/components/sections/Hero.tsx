@@ -65,23 +65,25 @@ const Hero = () => {
 
       <div className="container relative z-10 px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-8">
-          {/* Logo with glow effect */}
+          {/* Z Symbol Logo with glow effect */}
           <div className={`transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <div className="relative group cursor-pointer">
-              {/* Outer glow ring */}
-              <div className="absolute inset-0 w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-primary/30 blur-xl animate-glow-pulse" />
-              {/* Rotating ring */}
-              <div className="absolute -inset-2 rounded-2xl border border-primary/20 animate-spin-slow" />
-              {/* Main logo with image */}
-              <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shadow-card transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
+              {/* Outer glow pulse */}
+              <div className="absolute -inset-4 rounded-full bg-primary/20 blur-2xl animate-glow-pulse" />
+              {/* Rotating glow ring */}
+              <div className="absolute -inset-3 rounded-full bg-gradient-to-r from-primary/40 via-transparent to-primary/40 animate-spin-slow" />
+              {/* Inner breathing glow */}
+              <div className="absolute -inset-1 rounded-full bg-primary/10 animate-breathe" />
+              {/* Main logo image */}
+              <div className="relative w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full overflow-hidden shadow-card-hover transition-transform duration-500 group-hover:scale-110">
                 <img 
                   src={zymaxonSymbol} 
                   alt="Zymaxon" 
                   className="w-full h-full object-cover"
                 />
                 {/* Shimmer effect */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+                <div className="absolute inset-0 overflow-hidden rounded-full">
+                  <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
                 </div>
               </div>
             </div>
