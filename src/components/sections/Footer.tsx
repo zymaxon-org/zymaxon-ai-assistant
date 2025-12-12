@@ -1,4 +1,30 @@
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, Instagram, Facebook } from "lucide-react";
+import zymaxonLogo from "@/assets/zymaxon-logo.jpg";
+
+// X (Twitter) icon component
+const XIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+const socialLinks = [
+  { 
+    name: "Instagram", 
+    url: "https://www.instagram.com/zymaxonai/",
+    icon: Instagram 
+  },
+  { 
+    name: "X", 
+    url: "https://x.com/Zymaxon",
+    icon: XIcon
+  },
+  { 
+    name: "Facebook", 
+    url: "https://www.facebook.com/profile.php?id=61585110053732",
+    icon: Facebook 
+  }
+];
 
 const Footer = () => {
   return (
@@ -35,32 +61,48 @@ const Footer = () => {
       </div>
 
       <div className="container px-4 md:px-6 relative z-10">
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
+        <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center relative overflow-hidden">
+              <div className="relative h-10 overflow-hidden rounded-lg">
                 {/* Breathing glow */}
-                <div className="absolute inset-0 bg-primary/20 animate-breathe rounded-lg" />
-                <span className="text-lg font-display font-bold text-foreground relative z-10">Z</span>
+                <div className="absolute inset-0 bg-primary/30 animate-breathe rounded-lg blur-md" />
+                <img 
+                  src={zymaxonLogo} 
+                  alt="Zymaxon" 
+                  className="h-full w-auto object-contain relative z-10 brightness-0 invert"
+                />
               </div>
-              <span className="text-xl font-display font-semibold relative">
-                Zymaxon
-                {/* Shimmer on text */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-background/20 to-transparent 
-                  animate-shimmer" style={{ animationDuration: "3s" }} />
-              </span>
             </div>
             <p className="text-background/70 text-sm">
               Building platforms powered by AI. Connecting people with opportunities.
             </p>
+            
+            {/* Social Links */}
+            <div className="flex items-center gap-4 pt-2">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/social relative p-2 rounded-lg bg-background/10 hover:bg-primary/20 transition-all duration-300 hover:scale-110"
+                  aria-label={social.name}
+                >
+                  {/* Glow on hover */}
+                  <div className="absolute inset-0 rounded-lg bg-primary/30 opacity-0 group-hover/social:opacity-100 blur-md transition-opacity duration-300" />
+                  <social.icon className="w-5 h-5 text-background/70 group-hover/social:text-background relative z-10 transition-colors duration-300" />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-4">
             <h4 className="font-display font-semibold">Our Platforms</h4>
             <ul className="space-y-2 text-sm text-background/70">
-              {["Vivesa", "Vivesa Stores", "Vivesa Jobs", "Vivesa Gigs", "Vivesa Mentorship", "Vivesa Newsroom"].map((platform) => (
+              {["Vivesa", "Vivesa Jobs", "Vivesa Gigs", "Vivesa Mentorship", "Vivesa Newsroom"].map((platform) => (
                 <li key={platform}>
                   <a 
                     href="#" 
@@ -94,9 +136,31 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2 group">
                 <MapPin className="w-4 h-4 mt-0.5 transition-all duration-300 group-hover:text-primary group-hover:scale-110" />
-                <span className="transition-colors duration-300 group-hover:text-background">Lagos, Nigeria</span>
+                <span className="transition-colors duration-300 group-hover:text-background">Nigeria</span>
               </li>
             </ul>
+          </div>
+
+          {/* Connect */}
+          <div className="space-y-4">
+            <h4 className="font-display font-semibold">Follow Us</h4>
+            <p className="text-sm text-background/70">
+              Stay connected with Zymaxon for the latest updates and announcements.
+            </p>
+            <div className="flex flex-col gap-2 text-sm">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-background/70 hover:text-background transition-colors duration-300 flex items-center gap-2"
+                >
+                  <social.icon className="w-4 h-4" />
+                  @{social.name === "X" ? "Zymaxon" : social.name === "Instagram" ? "zymaxonai" : "Zymaxon"}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 

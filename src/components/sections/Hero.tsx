@@ -1,6 +1,7 @@
 import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import zymaxonSymbol from "@/assets/zymaxon-symbol.jpg";
 
 const Hero = () => {
   const [mounted, setMounted] = useState(false);
@@ -71,11 +72,15 @@ const Hero = () => {
               <div className="absolute inset-0 w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-primary/30 blur-xl animate-glow-pulse" />
               {/* Rotating ring */}
               <div className="absolute -inset-2 rounded-2xl border border-primary/20 animate-spin-slow" />
-              {/* Main logo */}
-              <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-primary flex items-center justify-center shadow-card transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
-                <span className="text-4xl md:text-5xl font-display font-bold text-primary-foreground">Z</span>
+              {/* Main logo with image */}
+              <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shadow-card transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3">
+                <img 
+                  src={zymaxonSymbol} 
+                  alt="Zymaxon" 
+                  className="w-full h-full object-cover"
+                />
                 {/* Shimmer effect */}
-                <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden">
                   <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
                 </div>
               </div>
@@ -91,7 +96,7 @@ const Hero = () => {
                 Zymaxon
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto animate-breathe">
+            <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto">
               Building platforms powered by AI
             </p>
           </div>
