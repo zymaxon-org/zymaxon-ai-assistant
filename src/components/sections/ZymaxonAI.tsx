@@ -39,10 +39,18 @@ const ZymaxonAI = () => {
 
   return (
     <section id="zymaxon-ai" className="py-24 md:py-32 bg-secondary/30 relative overflow-hidden">
-      {/* Animated Tech Grid Background */}
+      {/* Dramatic Tech Grid Background */}
       <div className="absolute inset-0 pointer-events-none">
+        {/* Large gradient orbs */}
+        <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.12)_0%,transparent_60%)] 
+          animate-float blur-3xl" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.1)_0%,transparent_60%)] 
+          animate-float-delayed blur-3xl" />
+
         {/* Circuit Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.04]"
+        <div className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage: `
               linear-gradient(hsl(var(--primary)) 1px, transparent 1px),
@@ -51,35 +59,59 @@ const ZymaxonAI = () => {
             backgroundSize: "40px 40px"
           }} />
         
-        {/* Animated grid pulse overlay */}
-        <div className="absolute inset-0 animate-grid-pulse opacity-[0.02]"
+        {/* Animated circuit nodes */}
+        <div className="absolute inset-0 opacity-[0.04]"
           style={{
-            backgroundImage: `
-              radial-gradient(circle at center, hsl(var(--primary)) 1px, transparent 1px)
-            `,
+            backgroundImage: `radial-gradient(circle at center, hsl(var(--primary)) 2px, transparent 2px)`,
             backgroundSize: "40px 40px"
           }} />
         
-        {/* Data Flow Particles */}
-        {[...Array(15)].map((_, i) => (
+        {/* Data Flow Particles - more dense */}
+        {[...Array(25)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-primary/40 animate-particle"
+            className={`absolute rounded-full animate-particle ${i % 4 === 0 ? 'w-2 h-2 bg-primary/50' : 'w-1.5 h-1.5 bg-primary/35'}`}
             style={{
-              left: `${5 + (i * 6)}%`,
+              left: `${2 + (i * 4)}%`,
               bottom: "-10px",
-              animationDelay: `${i * 0.6}s`,
-              animationDuration: `${6 + (i % 3) * 2}s`
+              animationDelay: `${i * 0.4}s`,
+              animationDuration: `${5 + (i % 3) * 2}s`
             }}
           />
         ))}
+
+        {/* Flowing connection lines */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.06]">
+          <defs>
+            <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+              <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path 
+            d="M0,200 Q400,100 800,200 T1600,200" 
+            stroke="url(#line-gradient)" 
+            strokeWidth="2" 
+            fill="none"
+            className="animate-shimmer"
+          />
+          <path 
+            d="M0,400 Q400,300 800,400 T1600,400" 
+            stroke="url(#line-gradient)" 
+            strokeWidth="2" 
+            fill="none"
+            className="animate-shimmer"
+            style={{ animationDelay: '1s' }}
+          />
+        </svg>
         
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-background/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/40" />
         
-        {/* Central Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] 
-          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08)_0%,transparent_70%)] animate-breathe" />
+        {/* Central Glow - larger */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[500px] 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.1)_0%,transparent_60%)] animate-breathe" />
       </div>
 
       <div className="container px-4 md:px-6 relative z-10">

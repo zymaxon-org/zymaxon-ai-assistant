@@ -43,7 +43,7 @@ const Header = () => {
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="flex items-center gap-2 group"
           >
-            <div className="relative h-10 md:h-12 overflow-hidden rounded-lg transition-all duration-300 group-hover:scale-105">
+            <div className="relative h-14 md:h-16 overflow-hidden rounded-lg transition-all duration-300 group-hover:scale-105">
               {/* Glow effect on hover */}
               <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
               <img 

@@ -65,7 +65,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-3 group">
-              <div className="relative h-12 overflow-hidden">
+              <div className="relative h-16 overflow-hidden">
                 {/* Breathing glow */}
                 <div className="absolute inset-0 bg-primary/30 animate-breathe blur-xl" />
                 <img 
