@@ -16,48 +16,97 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated gradient background */}
+      {/* Multi-layer animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-accent/30" />
       
-      {/* Animated gradient blobs */}
+      {/* Animated mesh gradient overlay */}
+      <div 
+        className="absolute inset-0 opacity-60"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 50% at 20% 40%, hsl(var(--primary) / 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 60%, hsl(var(--primary) / 0.1) 0%, transparent 50%),
+            radial-gradient(ellipse 50% 30% at 50% 80%, hsl(var(--primary) / 0.08) 0%, transparent 50%)
+          `
+        }}
+      />
+      
+      {/* Large animated gradient blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div 
-          className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full opacity-30 blur-3xl animate-float"
-          style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.3) 0%, transparent 70%)' }}
+          className="absolute top-1/4 -left-1/4 w-[800px] h-[800px] rounded-full opacity-40 blur-3xl animate-float"
+          style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.25) 0%, transparent 60%)' }}
         />
         <div 
-          className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl animate-float-delayed"
-          style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)' }}
+          className="absolute bottom-1/4 -right-1/4 w-[700px] h-[700px] rounded-full opacity-30 blur-3xl animate-float-delayed"
+          style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.3) 0%, transparent 60%)' }}
         />
         <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-10 blur-3xl animate-breathe"
-          style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.5) 0%, transparent 60%)' }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full opacity-15 blur-3xl animate-breathe"
+          style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 50%)' }}
         />
+        {/* Secondary accent blobs */}
+        <div 
+          className="absolute top-[10%] right-[20%] w-[300px] h-[300px] rounded-full opacity-20 blur-2xl animate-float"
+          style={{ background: 'radial-gradient(circle, hsl(227 100% 70% / 0.4) 0%, transparent 70%)', animationDelay: '2s' }}
+        />
+        <div 
+          className="absolute bottom-[20%] left-[15%] w-[250px] h-[250px] rounded-full opacity-25 blur-2xl animate-float-delayed"
+          style={{ background: 'radial-gradient(circle, hsl(227 80% 65% / 0.3) 0%, transparent 70%)', animationDelay: '3s' }}
+        />
+      </div>
+
+      {/* Animated wave patterns */}
+      <div className="absolute inset-0 overflow-hidden opacity-[0.03]">
+        <svg className="absolute w-full h-full" preserveAspectRatio="none">
+          <defs>
+            <pattern id="wave-pattern" x="0" y="0" width="100" height="20" patternUnits="userSpaceOnUse">
+              <path d="M0 10 Q25 0 50 10 T100 10" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#wave-pattern)" className="animate-shimmer" />
+        </svg>
       </div>
 
       {/* Animated grid pattern */}
       <div 
-        className="absolute inset-0 opacity-[0.03] animate-grid-pulse"
+        className="absolute inset-0 opacity-[0.04] animate-grid-pulse"
         style={{
           backgroundImage: `
-            linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
-            linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)
+            linear-gradient(hsl(var(--primary)) 1px, transparent 1px),
+            linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px'
         }}
       />
 
-      {/* Floating particles */}
+      {/* Floating particles - more dense */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {mounted && [...Array(20)].map((_, i) => (
+        {mounted && [...Array(35)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-primary/40 rounded-full animate-particle"
+            className={`absolute rounded-full animate-particle ${i % 3 === 0 ? 'w-1.5 h-1.5 bg-primary/50' : 'w-1 h-1 bg-primary/30'}`}
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${8 + Math.random() * 4}s`,
+              animationDuration: `${8 + Math.random() * 6}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Floating geometric shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {mounted && [...Array(6)].map((_, i) => (
+          <div
+            key={`shape-${i}`}
+            className="absolute w-16 h-16 border border-primary/10 rounded-lg animate-float opacity-30"
+            style={{
+              left: `${15 + i * 15}%`,
+              top: `${20 + (i % 3) * 25}%`,
+              animationDelay: `${i * 1.5}s`,
+              transform: `rotate(${i * 15}deg)`,
             }}
           />
         ))}
@@ -65,17 +114,19 @@ const Hero = () => {
 
       <div className="container relative z-10 px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-8">
-          {/* Z Symbol Logo with glow effect */}
+          {/* Z Symbol Logo with enhanced glow effect */}
           <div className={`transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <div className="relative group cursor-pointer">
-              {/* Outer glow pulse */}
-              <div className="absolute -inset-4 rounded-full bg-primary/20 blur-2xl animate-glow-pulse" />
+              {/* Outer glow pulse - larger */}
+              <div className="absolute -inset-8 rounded-full bg-primary/15 blur-3xl animate-glow-pulse" />
+              {/* Secondary glow layer */}
+              <div className="absolute -inset-6 rounded-full bg-primary/10 blur-2xl animate-breathe" />
               {/* Rotating glow ring */}
-              <div className="absolute -inset-3 rounded-full bg-gradient-to-r from-primary/40 via-transparent to-primary/40 animate-spin-slow" />
+              <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-primary/40 via-transparent to-primary/40 animate-spin-slow" />
               {/* Inner breathing glow */}
-              <div className="absolute -inset-1 rounded-full bg-primary/10 animate-breathe" />
+              <div className="absolute -inset-2 rounded-full bg-primary/10 animate-breathe" />
               {/* Main logo image */}
-              <div className="relative w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full overflow-hidden shadow-card-hover transition-transform duration-500 group-hover:scale-110">
+              <div className="relative w-28 h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 rounded-full overflow-hidden shadow-card-hover transition-transform duration-500 group-hover:scale-110">
                 <img 
                   src={zymaxonSymbol} 
                   alt="Zymaxon" 
@@ -120,15 +171,6 @@ const Hero = () => {
               </span>
             </Button>
           </div>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div 
-        className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-all duration-1000 delay-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
-      >
-        <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
-          <div className="w-1 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
         </div>
       </div>
     </section>

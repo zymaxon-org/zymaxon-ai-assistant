@@ -184,35 +184,95 @@ const Companies = () => {
 
   return (
     <section id="companies" className="py-24 md:py-32 bg-background relative overflow-hidden">
-      {/* Animated Background */}
+      {/* Dramatic Animated Background */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Gradient Blobs */}
-        <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] rounded-full 
-          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.05)_0%,transparent_70%)] 
+        {/* Large Gradient Blobs */}
+        <div className="absolute top-[10%] left-[5%] w-[600px] h-[600px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08)_0%,transparent_60%)] 
           animate-float blur-3xl" />
-        <div className="absolute bottom-[10%] right-[15%] w-[350px] h-[350px] rounded-full 
-          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04)_0%,transparent_70%)] 
+        <div className="absolute bottom-[5%] right-[5%] w-[500px] h-[500px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.07)_0%,transparent_60%)] 
           animate-float-delayed blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.05)_0%,transparent_70%)] 
+          animate-breathe blur-2xl" />
         
-        {/* Subtle Grid */}
-        <div className="absolute inset-0 opacity-[0.02]"
+        {/* Secondary accent orbs */}
+        <div className="absolute top-[30%] right-[20%] w-[200px] h-[200px] rounded-full 
+          bg-[radial-gradient(circle,hsl(227_90%_70%/0.08)_0%,transparent_70%)] 
+          animate-float blur-xl" style={{ animationDelay: "1.5s" }} />
+        <div className="absolute bottom-[25%] left-[15%] w-[180px] h-[180px] rounded-full 
+          bg-[radial-gradient(circle,hsl(227_80%_65%/0.1)_0%,transparent_70%)] 
+          animate-float-delayed blur-xl" style={{ animationDelay: "2.5s" }} />
+        
+        {/* Grid with gradient mask */}
+        <div className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: `linear-gradient(hsl(var(--primary)) 1px, transparent 1px),
                               linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
+            backgroundSize: '50px 50px',
+            maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 80%)'
           }}
         />
+
+        {/* Flowing connection lines */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.04]">
+          <defs>
+            <linearGradient id="companies-line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+              <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path 
+            d="M0,150 Q400,50 800,150 T1600,150" 
+            stroke="url(#companies-line-gradient)" 
+            strokeWidth="2" 
+            fill="none"
+            className="animate-shimmer"
+          />
+          <path 
+            d="M0,350 Q400,250 800,350 T1600,350" 
+            stroke="url(#companies-line-gradient)" 
+            strokeWidth="2" 
+            fill="none"
+            className="animate-shimmer"
+            style={{ animationDelay: '1.5s' }}
+          />
+          <path 
+            d="M0,550 Q400,450 800,550 T1600,550" 
+            stroke="url(#companies-line-gradient)" 
+            strokeWidth="2" 
+            fill="none"
+            className="animate-shimmer"
+            style={{ animationDelay: '3s' }}
+          />
+        </svg>
         
-        {/* Floating Particles */}
-        {[...Array(8)].map((_, i) => (
+        {/* Floating Particles - more dense */}
+        {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 rounded-full bg-primary/20 animate-particle"
+            className={`absolute rounded-full animate-particle ${i % 3 === 0 ? 'w-1.5 h-1.5 bg-primary/35' : 'w-1 h-1 bg-primary/20'}`}
             style={{
-              left: `${10 + (i * 12)}%`,
+              left: `${5 + (i * 5)}%`,
               bottom: '-10px',
-              animationDelay: `${i * 1.5}s`,
-              animationDuration: `${12 + (i % 4) * 2}s`
+              animationDelay: `${i * 0.8}s`,
+              animationDuration: `${10 + (i % 4) * 2}s`
+            }}
+          />
+        ))}
+
+        {/* Floating geometric shapes */}
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={`geo-${i}`}
+            className="absolute w-16 h-16 border border-primary/5 rounded-xl animate-float opacity-40"
+            style={{
+              left: `${8 + i * 20}%`,
+              top: `${15 + (i % 2) * 55}%`,
+              animationDelay: `${i * 1.8}s`,
+              transform: `rotate(${i * 25}deg)`,
             }}
           />
         ))}

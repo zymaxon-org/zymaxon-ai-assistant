@@ -25,8 +25,61 @@ const HowItWorks = () => {
   };
 
   return (
-    <section id="how-it-works" className="py-24 md:py-32 bg-secondary/30 overflow-hidden">
-      <div className="container px-4 md:px-6">
+    <section id="how-it-works" className="py-24 md:py-32 bg-secondary/30 overflow-hidden relative">
+      {/* Dramatic Tech Background */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Large gradient orbs */}
+        <div className="absolute top-[-5%] left-[10%] w-[500px] h-[500px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.1)_0%,transparent_60%)] 
+          animate-float blur-3xl" />
+        <div className="absolute bottom-[-10%] right-[5%] w-[600px] h-[600px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08)_0%,transparent_60%)] 
+          animate-float-delayed blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06)_0%,transparent_50%)] 
+          animate-breathe blur-2xl" />
+
+        {/* Tech grid pattern */}
+        <div className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `
+              linear-gradient(hsl(var(--primary)) 1px, transparent 1px),
+              linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)
+            `,
+            backgroundSize: "50px 50px"
+          }} />
+        
+        {/* Circuit nodes overlay */}
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(circle at center, hsl(var(--primary)) 2px, transparent 2px)`,
+            backgroundSize: "50px 50px"
+          }} />
+
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/30" />
+
+        {/* Data particles */}
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className={`absolute rounded-full animate-particle ${i % 4 === 0 ? 'w-1.5 h-1.5 bg-primary/45' : 'w-1 h-1 bg-primary/30'}`}
+            style={{
+              left: `${3 + (i * 5)}%`,
+              bottom: "-10px",
+              animationDelay: `${i * 0.5}s`,
+              animationDuration: `${6 + (i % 3) * 2}s`
+            }}
+          />
+        ))}
+
+        {/* Concentric rings at center */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full border border-primary/5 animate-breathe" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-primary/3 animate-breathe" style={{ animationDelay: "0.5s" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-primary/2 animate-breathe" style={{ animationDelay: "1s" }} />
+      </div>
+
+      <div className="container px-4 md:px-6 relative z-10">
         <div 
           ref={ref}
           className={`text-center space-y-4 mb-16 transition-all duration-700 ${

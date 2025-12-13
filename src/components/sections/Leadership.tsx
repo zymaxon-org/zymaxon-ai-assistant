@@ -6,26 +6,62 @@ const Leadership = () => {
 
   return (
     <section id="leadership" className="py-24 md:py-32 bg-background relative overflow-hidden">
-      {/* Animated Background */}
+      {/* Dramatic Animated Background */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Radial Spotlight Gradient */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] 
-          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08)_0%,transparent_70%)] 
+        {/* Large Radial Spotlight Gradients */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] 
+          bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.1)_0%,transparent_60%)] 
           animate-breathe" />
         
+        {/* Elegant spotlight beams */}
+        <div className="absolute top-0 left-[30%] w-[300px] h-[600px] 
+          bg-gradient-to-b from-primary/5 via-primary/3 to-transparent 
+          rotate-12 blur-2xl animate-float" style={{ animationDelay: "0s" }} />
+        <div className="absolute top-0 right-[25%] w-[250px] h-[500px] 
+          bg-gradient-to-b from-primary/4 via-primary/2 to-transparent 
+          -rotate-12 blur-2xl animate-float-delayed" style={{ animationDelay: "2s" }} />
+        
         {/* Floating Light Orbs */}
-        <div className="absolute top-20 left-[20%] w-32 h-32 rounded-full 
+        <div className="absolute top-20 left-[15%] w-48 h-48 rounded-full 
+          bg-[radial-gradient(circle,hsl(var(--primary)/0.12)_0%,transparent_70%)] 
+          animate-float blur-xl" style={{ animationDelay: "0s" }} />
+        <div className="absolute bottom-24 right-[10%] w-64 h-64 rounded-full 
           bg-[radial-gradient(circle,hsl(var(--primary)/0.1)_0%,transparent_70%)] 
-          animate-float" style={{ animationDelay: "0s" }} />
-        <div className="absolute bottom-32 right-[15%] w-48 h-48 rounded-full 
+          animate-float-delayed blur-xl" style={{ animationDelay: "2s" }} />
+        <div className="absolute top-40 right-[20%] w-36 h-36 rounded-full 
           bg-[radial-gradient(circle,hsl(var(--primary)/0.08)_0%,transparent_70%)] 
-          animate-float" style={{ animationDelay: "2s" }} />
-        <div className="absolute top-40 right-[25%] w-24 h-24 rounded-full 
-          bg-[radial-gradient(circle,hsl(var(--primary)/0.06)_0%,transparent_70%)] 
-          animate-float" style={{ animationDelay: "4s" }} />
+          animate-float blur-xl" style={{ animationDelay: "4s" }} />
+        <div className="absolute bottom-40 left-[25%] w-40 h-40 rounded-full 
+          bg-[radial-gradient(circle,hsl(227_80%_70%/0.1)_0%,transparent_70%)] 
+          animate-float blur-xl" style={{ animationDelay: "1s" }} />
+        
+        {/* Subtle Grid */}
+        <div className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
+              linear-gradient(hsl(var(--primary)) 1px, transparent 1px),
+              linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)
+            `,
+            backgroundSize: "80px 80px",
+            maskImage: "radial-gradient(ellipse at center, black 20%, transparent 70%)"
+          }} />
+
+        {/* Floating particles */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 rounded-full bg-primary/20 animate-particle"
+            style={{
+              left: `${8 + (i * 6)}%`,
+              bottom: "-10px",
+              animationDelay: `${i * 0.7}s`,
+              animationDuration: `${8 + (i % 4) * 2}s`
+            }}
+          />
+        ))}
         
         {/* Subtle Gradient Mesh */}
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-40">
           <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-primary/5 to-transparent 
             animate-gradient-shift" />
           <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-primary/5 to-transparent 
