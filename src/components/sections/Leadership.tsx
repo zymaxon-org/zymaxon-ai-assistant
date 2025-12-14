@@ -1,4 +1,4 @@
-import { Linkedin, Twitter } from "lucide-react";
+import { Facebook, Twitter } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 
 const Leadership = () => {
@@ -131,24 +131,28 @@ const Leadership = () => {
             {/* Social Links with bounce hover */}
             <div className="flex items-center justify-center gap-4">
               <a 
-                href="#" 
+                href="https://x.com/Charles05234900"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center 
                   text-muted-foreground transition-all duration-300 
                   hover:bg-primary hover:text-primary-foreground hover:scale-110 hover:-translate-y-1
                   hover:shadow-lg hover:shadow-primary/25"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center 
-                  text-muted-foreground transition-all duration-300 
-                  hover:bg-primary hover:text-primary-foreground hover:scale-110 hover:-translate-y-1
-                  hover:shadow-lg hover:shadow-primary/25"
-                aria-label="Twitter"
+                aria-label="X (Twitter)"
               >
                 <Twitter className="w-5 h-5" />
+              </a>
+              <a 
+                href="https://www.facebook.com/share/16poviq1NY/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center 
+                  text-muted-foreground transition-all duration-300 
+                  hover:bg-primary hover:text-primary-foreground hover:scale-110 hover:-translate-y-1
+                  hover:shadow-lg hover:shadow-primary/25"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-5 h-5" />
               </a>
             </div>
           </div>
