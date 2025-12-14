@@ -37,25 +37,27 @@ const Header = () => {
       }`}
     >
       <div className="container px-4 md:px-6">
-        <nav className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-2 group"
-          >
-            <div className="relative h-14 md:h-16 overflow-hidden rounded-lg transition-all duration-300 group-hover:scale-105">
-              {/* Glow effect on hover */}
-              <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
-              <img 
-                src={zymaxonLogo} 
-                alt="Zymaxon" 
-                className="h-full w-auto object-contain relative z-10"
-              />
-            </div>
-          </button>
+        <nav className="flex items-center h-16 md:h-20">
+          {/* Logo - Left */}
+          <div className="flex-shrink-0 w-16 md:w-20">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="flex items-center gap-2 group"
+            >
+              <div className="relative h-14 md:h-16 overflow-hidden rounded-lg transition-all duration-300 group-hover:scale-105">
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+                <img 
+                  src={zymaxonLogo} 
+                  alt="Zymaxon" 
+                  className="h-full w-auto object-contain relative z-10"
+                />
+              </div>
+            </button>
+          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Desktop Navigation - Center */}
+          <div className="hidden md:flex items-center justify-center flex-1 gap-8">
             {navLinks.map((link) => (
               <button
                 key={link.href}
@@ -67,14 +69,16 @@ const Header = () => {
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Spacer for balance on desktop, menu button on mobile - Right */}
+          <div className="flex-shrink-0 w-16 md:w-20 flex justify-end">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 text-foreground"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </nav>
 
         {/* Mobile Navigation */}
