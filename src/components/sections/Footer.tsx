@@ -101,7 +101,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="font-display font-semibold">Our Platforms</h4>
+            <h4 className="font-display font-semibold">Our Products</h4>
             <ul className="space-y-2 text-sm text-background/70">
               {["Vivesa", "Vivesa Jobs", "Vivesa Gigs", "Vivesa Mentorship", "Vivesa Newsroom"].map((platform) => (
                 <li key={platform}>

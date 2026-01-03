@@ -5,7 +5,7 @@ import zymaxonLogo from "@/assets/zymaxon-logo.jpg";
 const navLinks = [
   { label: "About", href: "#about" },
   { label: "Zymaxon AI", href: "#zymaxon-ai" },
-  { label: "Companies", href: "#companies" },
+  { label: "Products", href: "#products" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "Leadership", href: "#leadership" },
 ];

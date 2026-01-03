@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import ZymaxonAI from "@/components/sections/ZymaxonAI";
-import Companies from "@/components/sections/Companies";
+import Products from "@/components/sections/Products";
 import HowItWorks from "@/components/sections/HowItWorks";
 import Leadership from "@/components/sections/Leadership";
 import Footer from "@/components/sections/Footer";
@@ -14,7 +14,7 @@ const Index = () => {
       <Hero />
       <About />
       <ZymaxonAI />
-      <Companies />
+      <Products />
       <HowItWorks />
       <Leadership />
       <Footer />
