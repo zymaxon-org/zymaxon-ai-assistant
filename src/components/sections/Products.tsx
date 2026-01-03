@@ -179,11 +179,11 @@ const CompanyCard = ({ company, index, isInView }: CompanyCardProps) => {
   );
 };
 
-const Companies = () => {
+const Products = () => {
   const { ref, isInView } = useInView({ threshold: 0.1 });
 
   return (
-    <section id="companies" className="py-24 md:py-32 bg-background relative overflow-hidden">
+    <section id="products" className="py-24 md:py-32 bg-background relative overflow-hidden">
       {/* Dramatic Animated Background */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Large Gradient Blobs */}
@@ -286,7 +286,7 @@ const Companies = () => {
           }`}
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-semibold text-foreground">
-            Our Companies
+            Our Products
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             A portfolio of consumer platforms designed to solve real problems, 
@@ -310,4 +310,4 @@ const Companies = () => {
   );
 };
 
-export default Companies;
+export default Products;
