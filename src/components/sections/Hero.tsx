@@ -7,8 +7,8 @@ const Hero = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
-  const scrollToCompanies = () => {
-    document.getElementById("companies")?.scrollIntoView({
+  const scrollToProducts = () => {
+    document.getElementById("products")?.scrollIntoView({
       behavior: "smooth"
     });
   };
@@ -126,10 +126,10 @@ const Hero = () => {
 
           {/* CTA Button with shimmer */}
           <div className={`pt-4 transition-all duration-1000 delay-400 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <Button size="lg" onClick={scrollToCompanies} className="group relative px-8 py-6 text-lg font-medium overflow-hidden transition-all duration-300 hover:shadow-card-hover hover:scale-105">
+            <Button size="lg" onClick={scrollToProducts} className="group relative px-8 py-6 text-lg font-medium overflow-hidden transition-all duration-300 hover:shadow-card-hover hover:scale-105">
               {/* Button shimmer */}
               <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer" />
-              <span className="relative z-10 flex items-center">Explore Our Produc<ArrowDown className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-y-1" />
+              <span className="relative z-10 flex items-center">Explore Our Products<ArrowDown className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-y-1" />
               </span>
             </Button>
           </div>
