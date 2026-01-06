@@ -1,5 +1,5 @@
 import { Mail, MapPin, Instagram, Facebook } from "lucide-react";
-import zymaxonLogo from "@/assets/zymaxon-logo.jpg";
+import zymaxonLogo from "@/assets/zymaxon-symbol.png";
 
 // X (Twitter) icon component
 const XIcon = ({ className }: { className?: string }) => (
