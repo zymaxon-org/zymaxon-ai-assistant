@@ -1,7 +1,7 @@
 import { Store, Briefcase, Users, BookOpen, Newspaper, Sparkles } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 import { useState, useRef } from "react";
-import zymaxonPowered from "@/assets/zymaxon-powered.jpg";
+import zymaxonPowered from "@/assets/zymaxon-powered.png";
 
 const companies = [
   {
