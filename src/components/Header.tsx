@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import zymaxonLogo from "@/assets/zymaxon-symbol.png";
+import zymaxonLogo from "@/assets/zymaxon-header-logo.png";
 
 const navLinks = [
   { label: "About", href: "#about" },
