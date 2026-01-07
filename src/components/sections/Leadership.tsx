@@ -1,5 +1,6 @@
 import { Facebook, Twitter } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
+import johnCharlesPhoto from "@/assets/john-charles.png";
 
 const Leadership = () => {
   const { ref, isInView } = useInView({ threshold: 0.2 });
@@ -110,10 +111,14 @@ const Leadership = () => {
               {/* Pulsing glow */}
               <div className="absolute inset-1 rounded-full bg-primary/20 animate-glow-pulse" />
               
-              {/* Inner circle */}
-              <div className="absolute inset-2 rounded-full bg-primary/10 flex items-center justify-center 
+              {/* Inner circle with photo */}
+              <div className="absolute inset-2 rounded-full overflow-hidden 
                 border-4 border-card transition-all duration-300 group-hover:border-primary/40">
-                <span className="text-4xl font-display font-bold text-primary">JC</span>
+                <img 
+                  src={johnCharlesPhoto} 
+                  alt="John Charles - Founder & CEO of Zymaxon"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
 
