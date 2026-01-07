@@ -117,7 +117,7 @@ const Leadership = () => {
                 <img 
                   src={johnCharlesPhoto} 
                   alt="John Charles - Founder & CEO of Zymaxon"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
             </div>
