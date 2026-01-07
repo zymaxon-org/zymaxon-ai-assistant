@@ -126,13 +126,13 @@ const Footer = () => {
               <li className="flex items-center gap-2 group">
                 <Mail className="w-4 h-4 transition-all duration-300 group-hover:text-primary group-hover:scale-110" />
                 <a 
-                  href="mailto:hello@zymaxon.com" 
+                  href="mailto:zymaxon@yahoo.com" 
                   className="transition-colors duration-300 hover:text-background
                     relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-px 
                     after:bg-primary after:scale-x-0 after:origin-right
                     after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left"
                 >
-                  hello@zymaxon.com
+                  zymaxon@yahoo.com
                 </a>
               </li>
               <li className="flex items-start gap-2 group">
