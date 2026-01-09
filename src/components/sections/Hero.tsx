@@ -1,7 +1,15 @@
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ShoppingBag, Briefcase, Users, GraduationCap, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import zymaxonSymbol from "@/assets/zymaxon-symbol.jpg";
+
+const productIndicators = [
+  { name: "Marketplace", icon: ShoppingBag, position: "left-top" },
+  { name: "Jobs", icon: Briefcase, position: "left-bottom" },
+  { name: "Gigs", icon: Users, position: "right-top" },
+  { name: "Mentorship", icon: GraduationCap, position: "right-middle" },
+  { name: "Newsroom", icon: Newspaper, position: "right-bottom" },
+];
 const Hero = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -86,6 +94,56 @@ const Hero = () => {
         animationDelay: `${i * 1.5}s`,
         transform: `rotate(${i * 15}deg)`
       }} />)}
+      </div>
+
+      {/* Floating Product Indicators - Left Side */}
+      <div className="absolute left-4 md:left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-6 z-10">
+        {mounted && productIndicators.slice(0, 2).map((product, i) => {
+          const Icon = product.icon;
+          return (
+            <div
+              key={product.name}
+              className={`group flex items-center gap-3 bg-background/60 backdrop-blur-sm border border-primary/20 rounded-xl px-4 py-3 shadow-lg transition-all duration-500 hover:bg-background/80 hover:border-primary/40 hover:scale-105 ${mounted ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}
+              style={{ 
+                animationDelay: `${i * 0.2}s`,
+                transitionDelay: `${0.6 + i * 0.15}s`
+              }}
+            >
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Icon className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-muted-foreground">Vivesa</span>
+                <span className="text-sm font-medium text-foreground">{product.name}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Floating Product Indicators - Right Side */}
+      <div className="absolute right-4 md:right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col gap-6 z-10">
+        {mounted && productIndicators.slice(2).map((product, i) => {
+          const Icon = product.icon;
+          return (
+            <div
+              key={product.name}
+              className={`group flex items-center gap-3 bg-background/60 backdrop-blur-sm border border-primary/20 rounded-xl px-4 py-3 shadow-lg transition-all duration-500 hover:bg-background/80 hover:border-primary/40 hover:scale-105 ${mounted ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
+              style={{ 
+                animationDelay: `${i * 0.2}s`,
+                transitionDelay: `${0.6 + i * 0.15}s`
+              }}
+            >
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Icon className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-muted-foreground">Vivesa</span>
+                <span className="text-sm font-medium text-foreground">{product.name}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="container relative z-10 px-4 md:px-6">
