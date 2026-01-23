@@ -22,7 +22,7 @@ const ContactSlide = () => {
             Let's Build Together
           </h2>
           <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto">
-            Partner with Vivesa to shape the future of Nigeria's digital economy
+            Partner with Vivesa to shape the future of the global digital economy
           </p>
         </div>
         
@@ -38,7 +38,7 @@ const ContactSlide = () => {
             <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
               <MapPin className="w-5 h-5 text-primary" />
             </div>
-            <span>Nigeria</span>
+            <span>Worldwide</span>
           </div>
         </div>
         

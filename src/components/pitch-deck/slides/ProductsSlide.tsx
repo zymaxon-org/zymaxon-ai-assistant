@@ -6,7 +6,7 @@ const products = [
     name: "Vivesa",
     subtitle: "Marketplace",
     icon: ShoppingBag,
-    description: "AI-powered marketplace connecting buyers with verified sellers across Nigeria",
+    description: "AI-powered marketplace connecting buyers with verified sellers worldwide",
     aiFeature: "Smart product recommendations & price predictions"
   },
   {
@@ -34,7 +34,7 @@ const products = [
     name: "Vivesa Newsroom",
     subtitle: "Media",
     icon: Newspaper,
-    description: "Stay informed with curated news and insights for Nigerian professionals",
+    description: "Stay informed with curated news and insights for professionals everywhere",
     aiFeature: "Personalized news feed & trend analysis"
   }
 ];

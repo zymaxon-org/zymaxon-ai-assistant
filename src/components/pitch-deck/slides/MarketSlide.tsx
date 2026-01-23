@@ -3,36 +3,36 @@ import { TrendingUp, Users, Globe, Smartphone } from "lucide-react";
 
 const stats = [
   {
-    value: "200M+",
-    label: "Population",
-    description: "Largest market in Africa",
-    icon: Users
-  },
-  {
-    value: "70%",
-    label: "Under 30",
-    description: "Young, tech-savvy demographic",
+    value: "$6T+",
+    label: "Digital Economy",
+    description: "Global market size",
     icon: TrendingUp
   },
   {
-    value: "100M+",
+    value: "5B+",
     label: "Internet Users",
-    description: "Rapidly growing connectivity",
+    description: "Worldwide connectivity",
     icon: Globe
   },
   {
-    value: "80%",
+    value: "1.5B+",
+    label: "Gig Workers",
+    description: "Global freelance workforce",
+    icon: Users
+  },
+  {
+    value: "60%+",
     label: "Mobile-First",
-    description: "Primary access via smartphones",
+    description: "Primary device globally",
     icon: Smartphone
   }
 ];
 
 const marketSizes = [
-  { segment: "E-commerce", value: "$12B", growth: "+25% YoY" },
-  { segment: "Gig Economy", value: "$4B", growth: "+35% YoY" },
-  { segment: "EdTech", value: "$1.5B", growth: "+40% YoY" },
-  { segment: "Recruitment", value: "$800M", growth: "+20% YoY" },
+  { segment: "E-commerce", value: "$6.3T", growth: "+10% YoY" },
+  { segment: "Gig Economy", value: "$455B", growth: "+17% YoY" },
+  { segment: "EdTech", value: "$400B", growth: "+16% YoY" },
+  { segment: "Recruitment Tech", value: "$28B", growth: "+12% YoY" },
 ];
 
 const MarketSlide = () => {
@@ -46,7 +46,7 @@ const MarketSlide = () => {
             Market Opportunity
           </h2>
           <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto">
-            Nigeria represents Africa's largest digital economy opportunity
+            The global digital economy presents a massive opportunity
           </p>
         </div>
         
@@ -91,7 +91,7 @@ const MarketSlide = () => {
         <div className="text-center pt-4">
           <div className="inline-block bg-primary/20 border border-primary/30 rounded-2xl px-8 py-4">
             <div className="text-white/60 text-sm mb-1">Total Addressable Market</div>
-            <div className="text-4xl md:text-5xl font-bold text-white">$18B+</div>
+            <div className="text-4xl md:text-5xl font-bold text-white">$7T+</div>
           </div>
         </div>
       </div>
