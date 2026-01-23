@@ -5,7 +5,7 @@ const problems = [
   {
     icon: Search,
     title: "Fragmented Platforms",
-    description: "Nigerians navigate dozens of disconnected platforms for jobs, gigs, shopping, and learning"
+    description: "People navigate dozens of disconnected platforms for jobs, gigs, shopping, and learning"
   },
   {
     icon: Shield,
@@ -20,7 +20,7 @@ const problems = [
   {
     icon: AlertTriangle,
     title: "Missed Opportunities",
-    description: "Talented Nigerians and quality products remain invisible without proper discovery tools"
+    description: "Talented individuals and quality products remain invisible without proper discovery tools"
   }
 ];
 
@@ -35,7 +35,7 @@ const ProblemSlide = () => {
             The Problem
           </h2>
           <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto">
-            Nigeria's digital services landscape is broken, scattered, and inefficient
+            The digital services landscape is broken, scattered, and inefficient
           </p>
         </div>
         
@@ -65,16 +65,16 @@ const ProblemSlide = () => {
         {/* Stats */}
         <div className="flex flex-wrap justify-center gap-8 md:gap-16 pt-8">
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-white">200M+</div>
-            <div className="text-white/50 text-sm">Nigerians Online</div>
+            <div className="text-3xl md:text-4xl font-bold text-white">5B+</div>
+            <div className="text-white/50 text-sm">People Online</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-white">70%</div>
-            <div className="text-white/50 text-sm">Youth Unemployment</div>
+            <div className="text-3xl md:text-4xl font-bold text-white">1.5B+</div>
+            <div className="text-white/50 text-sm">Gig Workers Globally</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-white">$4B+</div>
-            <div className="text-white/50 text-sm">Gig Economy Potential</div>
+            <div className="text-3xl md:text-4xl font-bold text-white">$455B+</div>
+            <div className="text-white/50 text-sm">Gig Economy Size</div>
           </div>
         </div>
       </div>

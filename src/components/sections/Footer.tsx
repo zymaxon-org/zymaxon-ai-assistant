@@ -137,7 +137,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2 group">
                 <MapPin className="w-4 h-4 mt-0.5 transition-all duration-300 group-hover:text-primary group-hover:scale-110" />
-                <span className="transition-colors duration-300 group-hover:text-background">Nigeria</span>
+                <span className="transition-colors duration-300 group-hover:text-background">Worldwide</span>
               </li>
             </ul>
           </div>

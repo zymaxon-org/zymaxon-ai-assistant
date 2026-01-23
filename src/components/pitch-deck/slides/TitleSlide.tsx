@@ -27,7 +27,7 @@ const TitleSlide = () => {
         
         {/* Tagline */}
         <p className="text-xl md:text-2xl lg:text-3xl text-white/80 font-light max-w-3xl">
-          Powering Nigeria's Digital Economy
+          Powering the Global Digital Economy
         </p>
         
         {/* Subtitle */}
