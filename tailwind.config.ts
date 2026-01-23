@@ -146,6 +146,14 @@ export default {
           "0%, 100%": { opacity: "0.5", transform: "scale(1)" },
           "50%": { opacity: "0.8", transform: "scale(1.05)" },
         },
+        "map-pulse": {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.6" },
+          "50%": { transform: "scale(1.8)", opacity: "0" },
+        },
+        "expand-ring": {
+          "0%": { transform: "scale(0.8)", opacity: "0.6" },
+          "100%": { transform: "scale(2.5)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -165,6 +173,8 @@ export default {
         "grid-pulse": "grid-pulse 4s ease-in-out infinite",
         "particle": "particle 10s linear infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "map-pulse": "map-pulse 2s ease-in-out infinite",
+        "expand-ring": "expand-ring 2s ease-out infinite",
       },
     },
   },

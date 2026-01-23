@@ -5,6 +5,7 @@ import ZymaxonAI from "@/components/sections/ZymaxonAI";
 import Products from "@/components/sections/Products";
 import HowItWorks from "@/components/sections/HowItWorks";
 import Leadership from "@/components/sections/Leadership";
+import GlobalPresence from "@/components/sections/GlobalPresence";
 import Footer from "@/components/sections/Footer";
 
 const Index = () => {
@@ -17,6 +18,7 @@ const Index = () => {
       <Products />
       <HowItWorks />
       <Leadership />
+      <GlobalPresence />
       <Footer />
     </main>
   );
