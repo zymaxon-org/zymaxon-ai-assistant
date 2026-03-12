@@ -1,6 +1,7 @@
-import { Store, Briefcase, Users, BookOpen, Newspaper, Sparkles } from "lucide-react";
+import { Store, Briefcase, Users, BookOpen, Newspaper, Sparkles, ArrowRight } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import zymaxonPowered from "@/assets/zymaxon-powered.png";
 
 const companies = [
