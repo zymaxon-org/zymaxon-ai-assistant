@@ -1,6 +1,7 @@
-import { Store, Briefcase, Users, BookOpen, Newspaper, Sparkles } from "lucide-react";
+import { Store, Briefcase, Users, BookOpen, Newspaper, Sparkles, ArrowRight } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import zymaxonPowered from "@/assets/zymaxon-powered.png";
 
 const companies = [
@@ -304,6 +305,18 @@ const Products = () => {
               isInView={isInView}
             />
           ))}
+        </div>
+
+        {/* Demo CTA */}
+        <div className={`text-center mt-12 transition-all duration-700 delay-500 ${
+          isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        }`}>
+          <Link
+            to="/vivesa-demo"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          >
+            View Escrow Demo <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>
