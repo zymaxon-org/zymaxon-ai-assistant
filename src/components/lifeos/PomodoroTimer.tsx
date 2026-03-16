@@ -9,7 +9,7 @@ export default function PomodoroTimer() {
   const [isWork, setIsWork] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const WORK_TIME = 25 * 60;
   const BREAK_TIME = 5 * 60;

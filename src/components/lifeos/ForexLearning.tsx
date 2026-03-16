@@ -16,7 +16,7 @@ export default function ForexLearning() {
   const [trades, setTrades] = useLocalStorage<ForexTrade[]>('lifeos-forex-trades', []);
   const [botNotes, setBotNotes] = useLocalStorage<string>('lifeos-forex-bot', '');
   const [newClass, setNewClass] = useState('');
-  const [newTrade, setNewTrade] = useState({ pair: 'EUR/USD', type: 'buy' as const, entry: '', exit: '', notes: '' });
+  const [newTrade, setNewTrade] = useState<{ pair: string; type: 'buy' | 'sell'; entry: string; exit: string; notes: string }>({ pair: 'EUR/USD', type: 'buy', entry: '', exit: '', notes: '' });
 
   const addClass = () => {
     if (!newClass.trim()) return;

@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PitchDeck from "./pages/PitchDeck";
 import VivesaDemo from "./pages/VivesaDemo";
+import LifeOS from "./pages/LifeOS";
 
 const queryClient = new QueryClient();
 
