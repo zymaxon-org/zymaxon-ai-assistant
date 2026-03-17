@@ -3,26 +3,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { WeeklyReviewData } from './shared/types';
-import { Plus, ClipboardList, Star } from 'lucide-react';
+import { useSupabaseData } from './shared/useSupabaseData';
+import { ClipboardList, Star } from 'lucide-react';
 
 export default function WeeklyReview() {
-  const [reviews, setReviews] = useLocalStorage<WeeklyReviewData[]>('lifeos-reviews', []);
-  const [current, setCurrent] = useState<Omit<WeeklyReviewData, 'id' | 'weekStart'>>({
-    wins: '', challenges: '', nextWeekGoals: '', rating: 7,
-  });
+  const { data: reviews, insert, isLoading } = useSupabaseData<any>('weekly_reviews', { orderBy: 'created_at', orderAsc: false });
+  const [current, setCurrent] = useState({ wins: '', challenges: '', next_week_goals: '', rating: 7 });
 
-  const submit = () => {
+  const submit = async () => {
     const monday = new Date();
     monday.setDate(monday.getDate() - monday.getDay() + 1);
-    setReviews(prev => [...prev, {
-      id: crypto.randomUUID(),
-      weekStart: monday.toISOString().split('T')[0],
-      ...current,
-    }]);
-    setCurrent({ wins: '', challenges: '', nextWeekGoals: '', rating: 7 });
+    await insert({
+      week_start: monday.toISOString().split('T')[0],
+      wins: current.wins, challenges: current.challenges,
+      next_week_goals: current.next_week_goals, rating: current.rating,
+    });
+    setCurrent({ wins: '', challenges: '', next_week_goals: '', rating: 7 });
   };
+
+  if (isLoading) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -48,7 +47,7 @@ export default function WeeklyReview() {
           </div>
           <div>
             <label className="text-sm font-medium text-foreground mb-1 block">🎯 Next Week Goals</label>
-            <Textarea value={current.nextWeekGoals} onChange={e => setCurrent(p => ({ ...p, nextWeekGoals: e.target.value }))} placeholder="What will you focus on?" className="min-h-[80px]" />
+            <Textarea value={current.next_week_goals} onChange={e => setCurrent(p => ({ ...p, next_week_goals: e.target.value }))} placeholder="What will you focus on?" className="min-h-[80px]" />
           </div>
           <div>
             <label className="text-sm font-medium text-foreground mb-1 block">⭐ Week Rating: {current.rating}/10</label>
@@ -61,18 +60,18 @@ export default function WeeklyReview() {
       {reviews.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-lg font-display font-bold text-foreground">Past Reviews</h2>
-          {[...reviews].reverse().map(r => (
+          {reviews.map((r: any) => (
             <Card key={r.id} className="bg-card border-border">
               <CardContent className="py-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-foreground">Week of {r.weekStart}</span>
+                  <span className="text-sm font-medium text-foreground">Week of {r.week_start}</span>
                   <span className="flex items-center gap-1 text-sm font-bold text-primary">
                     <Star className="h-3.5 w-3.5 fill-primary" /> {r.rating}/10
                   </span>
                 </div>
                 {r.wins && <p className="text-xs text-muted-foreground mb-1"><strong>Wins:</strong> {r.wins}</p>}
                 {r.challenges && <p className="text-xs text-muted-foreground mb-1"><strong>Challenges:</strong> {r.challenges}</p>}
-                {r.nextWeekGoals && <p className="text-xs text-muted-foreground"><strong>Goals:</strong> {r.nextWeekGoals}</p>}
+                {r.next_week_goals && <p className="text-xs text-muted-foreground"><strong>Goals:</strong> {r.next_week_goals}</p>}
               </CardContent>
             </Card>
           ))}

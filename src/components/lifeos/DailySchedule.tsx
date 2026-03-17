@@ -3,35 +3,36 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { Task, TIME_BLOCKS, Priority } from './shared/types';
-import { TaskItem } from './shared/TaskItem';
-import { Plus, CalendarDays, Sun, CloudSun, Sunset, Moon, Stars } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { useSupabaseData } from './shared/useSupabaseData';
+import { TIME_BLOCKS } from './shared/types';
+import { Plus, Sun, CloudSun, Sunset, Moon, Stars, Clock, Trash2 } from 'lucide-react';
 
-const BLOCK_ICONS = { morning: Sun, midday: CloudSun, afternoon: Sunset, evening: Moon, night: Stars };
+const BLOCK_ICONS: Record<string, any> = { morning: Sun, midday: CloudSun, afternoon: Sunset, evening: Moon, night: Stars };
+
+const PRIORITY_BG: Record<string, string> = {
+  critical: 'bg-destructive/10 border-destructive/30',
+  important: 'bg-primary/10 border-primary/30',
+  optional: 'bg-muted border-border',
+};
 
 export default function DailySchedule() {
   const today = new Date().toISOString().split('T')[0];
-  const [tasks, setTasks] = useLocalStorage<Task[]>('lifeos-daily-tasks', []);
-  const [newTask, setNewTask] = useState({ title: '', block: 'morning' as Task['timeBlock'], priority: 'important' as Priority, deadline: today, minutes: '' });
+  const { data: tasks, insert, update, remove, isLoading } = useSupabaseData<any>('tasks');
+  const [newTask, setNewTask] = useState({ title: '', block: 'morning', priority: 'important', deadline: today, minutes: '' });
 
-  const addTask = () => {
+  const addTask = async () => {
     if (!newTask.title.trim()) return;
-    setTasks(prev => [...prev, {
-      id: crypto.randomUUID(),
-      title: newTask.title,
-      timeBlock: newTask.block,
-      priority: newTask.priority,
-      deadline: newTask.deadline,
-      estimatedMinutes: newTask.minutes ? parseInt(newTask.minutes) : undefined,
-      progressPercent: 0,
-      completed: false,
-    }]);
+    await insert({
+      title: newTask.title, time_block: newTask.block, priority: newTask.priority,
+      deadline: newTask.deadline, estimated_minutes: newTask.minutes ? parseInt(newTask.minutes) : null,
+      progress_percent: 0, completed: false, category: 'daily',
+    });
     setNewTask({ title: '', block: 'morning', priority: 'important', deadline: today, minutes: '' });
   };
 
-  const toggle = (id: string) => setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  const remove = (id: string) => setTasks(prev => prev.filter(t => t.id !== id));
+  if (isLoading) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -44,13 +45,13 @@ export default function DailySchedule() {
         <CardContent className="pt-4 space-y-2">
           <div className="flex gap-2 flex-wrap">
             <Input placeholder="Task..." value={newTask.title} onChange={e => setNewTask(p => ({ ...p, title: e.target.value }))} className="flex-1 min-w-[150px]" />
-            <Select value={newTask.block} onValueChange={v => setNewTask(p => ({ ...p, block: v as Task['timeBlock'] }))}>
+            <Select value={newTask.block} onValueChange={v => setNewTask(p => ({ ...p, block: v }))}>
               <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {TIME_BLOCKS.map(b => <SelectItem key={b.key} value={b.key}>{b.label}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Select value={newTask.priority} onValueChange={v => setNewTask(p => ({ ...p, priority: v as Priority }))}>
+            <Select value={newTask.priority} onValueChange={v => setNewTask(p => ({ ...p, priority: v }))}>
               <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {['critical', 'important', 'optional'].map(p => <SelectItem key={p} value={p} className="capitalize">{p}</SelectItem>)}
@@ -64,7 +65,7 @@ export default function DailySchedule() {
 
       {TIME_BLOCKS.map(block => {
         const Icon = BLOCK_ICONS[block.key];
-        const blockTasks = tasks.filter(t => t.timeBlock === block.key);
+        const blockTasks = tasks.filter((t: any) => t.time_block === block.key);
         return (
           <Card key={block.key} className="bg-card border-border">
             <CardHeader className="pb-2">
@@ -79,8 +80,27 @@ export default function DailySchedule() {
                 <p className="text-xs text-muted-foreground py-2">No tasks scheduled.</p>
               ) : (
                 <div className="space-y-2">
-                  {blockTasks.map(task => (
-                    <TaskItem key={task.id} task={task} onToggle={toggle} onDelete={remove} />
+                  {blockTasks.map((task: any) => (
+                    <div key={task.id} className={`flex items-center gap-3 p-3 rounded-lg border ${PRIORITY_BG[task.priority] || ''} ${task.completed ? 'opacity-60' : ''}`}>
+                      <Checkbox checked={task.completed} onCheckedChange={() => update({ id: task.id, completed: !task.completed })} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-medium ${task.completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{task.title}</span>
+                          <Badge variant="outline" className="text-[10px] capitalize">{task.priority}</Badge>
+                        </div>
+                        <div className="flex items-center gap-3 mt-1">
+                          {task.deadline && (
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-3 w-3" />{new Date(task.deadline).toLocaleDateString()}
+                            </span>
+                          )}
+                          {task.estimated_minutes && <span className="text-xs text-muted-foreground">{task.estimated_minutes}min</span>}
+                        </div>
+                      </div>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => remove(task.id)}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   ))}
                 </div>
               )}

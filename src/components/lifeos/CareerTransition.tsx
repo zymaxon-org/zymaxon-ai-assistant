@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,15 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { LearningTool, JobApplication } from './shared/types';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { Plus, Trash2, Briefcase, BookOpen } from 'lucide-react';
 
-const DEFAULT_TOOLS: LearningTool[] = [
-  { id: '1', name: 'Excel', lessonsCompleted: 0, totalLessons: 30, notes: '' },
-  { id: '2', name: 'SQL', lessonsCompleted: 0, totalLessons: 40, notes: '' },
-  { id: '3', name: 'Power BI', lessonsCompleted: 0, totalLessons: 25, notes: '' },
-  { id: '4', name: 'Python', lessonsCompleted: 0, totalLessons: 50, notes: '' },
+const DEFAULT_TOOLS = [
+  { name: 'Excel', lessons_completed: 0, total_lessons: 30, notes: '' },
+  { name: 'SQL', lessons_completed: 0, total_lessons: 40, notes: '' },
+  { name: 'Power BI', lessons_completed: 0, total_lessons: 25, notes: '' },
+  { name: 'Python', lessons_completed: 0, total_lessons: 50, notes: '' },
 ];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -26,31 +25,31 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function CareerTransition() {
-  const [tools, setTools] = useLocalStorage<LearningTool[]>('lifeos-career-tools', DEFAULT_TOOLS);
-  const [jobs, setJobs] = useLocalStorage<JobApplication[]>('lifeos-jobs', []);
+  const { data: tools, insert: insertTool, update: updateTool, isLoading: loadingTools } = useSupabaseData<any>('learning_tools');
+  const { data: jobs, insert: insertJob, update: updateJob, remove: removeJob, isLoading: loadingJobs } = useSupabaseData<any>('job_applications');
   const [newJob, setNewJob] = useState({ company: '', role: '', platform: 'Indeed' });
 
-  const updateTool = (id: string, inc: number) => {
-    setTools(prev => prev.map(t => t.id === id ? { ...t, lessonsCompleted: Math.max(0, Math.min(t.totalLessons, t.lessonsCompleted + inc)) } : t));
+  useEffect(() => {
+    if (!loadingTools && tools.length === 0) {
+      DEFAULT_TOOLS.forEach(t => insertTool(t));
+    }
+  }, [loadingTools, tools.length]);
+
+  const updateToolProgress = async (id: string, inc: number, tool: any) => {
+    const val = Math.max(0, Math.min(tool.total_lessons, tool.lessons_completed + inc));
+    await updateTool({ id, lessons_completed: val });
   };
 
-  const addJob = () => {
+  const addJob = async () => {
     if (!newJob.company.trim() || !newJob.role.trim()) return;
-    setJobs(prev => [...prev, {
-      id: crypto.randomUUID(),
-      ...newJob,
-      status: 'applied',
-      dateApplied: new Date().toISOString().split('T')[0],
-      notes: '',
-    }]);
+    await insertJob({
+      company: newJob.company, role: newJob.role, platform: newJob.platform,
+      status: 'applied', date_applied: new Date().toISOString().split('T')[0], notes: '',
+    });
     setNewJob({ company: '', role: '', platform: 'Indeed' });
   };
 
-  const updateJobStatus = (id: string, status: JobApplication['status']) => {
-    setJobs(prev => prev.map(j => j.id === id ? { ...j, status } : j));
-  };
-
-  const deleteJob = (id: string) => setJobs(prev => prev.filter(j => j.id !== id));
+  if (loadingTools || loadingJobs) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -67,8 +66,8 @@ export default function CareerTransition() {
 
         <TabsContent value="learning" className="space-y-4 mt-4">
           <div className="grid md:grid-cols-2 gap-4">
-            {tools.map(tool => {
-              const pct = (tool.lessonsCompleted / tool.totalLessons) * 100;
+            {tools.map((tool: any) => {
+              const pct = tool.total_lessons > 0 ? (tool.lessons_completed / tool.total_lessons) * 100 : 0;
               return (
                 <Card key={tool.id} className="bg-card border-border">
                   <CardHeader className="pb-2">
@@ -79,10 +78,10 @@ export default function CareerTransition() {
                   <CardContent>
                     <Progress value={pct} className="h-2 mb-2" />
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">{tool.lessonsCompleted}/{tool.totalLessons} lessons</span>
+                      <span className="text-xs text-muted-foreground">{tool.lessons_completed}/{tool.total_lessons} lessons</span>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" className="h-6 text-xs" onClick={() => updateTool(tool.id, -1)}>-1</Button>
-                        <Button size="sm" className="h-6 text-xs" onClick={() => updateTool(tool.id, 1)}>+1</Button>
+                        <Button size="sm" variant="outline" className="h-6 text-xs" onClick={() => updateToolProgress(tool.id, -1, tool)}>-1</Button>
+                        <Button size="sm" className="h-6 text-xs" onClick={() => updateToolProgress(tool.id, 1, tool)}>+1</Button>
                       </div>
                     </div>
                   </CardContent>
@@ -107,7 +106,7 @@ export default function CareerTransition() {
             <Card className="bg-card border-border"><CardContent className="py-8 text-center text-muted-foreground">No applications yet.</CardContent></Card>
           ) : (
             <div className="space-y-2">
-              {jobs.map(job => (
+              {jobs.map((job: any) => (
                 <Card key={job.id} className="bg-card border-border">
                   <CardContent className="py-3">
                     <div className="flex items-center justify-between">
@@ -117,20 +116,18 @@ export default function CareerTransition() {
                           <span className="font-medium text-foreground">{job.company}</span>
                           <span className="text-sm text-muted-foreground">— {job.role}</span>
                         </div>
-                        <span className="text-xs text-muted-foreground">{job.dateApplied} · {job.platform}</span>
+                        <span className="text-xs text-muted-foreground">{job.date_applied} · {job.platform}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Select value={job.status} onValueChange={(v) => updateJobStatus(job.id, v as JobApplication['status'])}>
-                          <SelectTrigger className="w-28 h-7 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
+                        <Select value={job.status} onValueChange={(v) => updateJob({ id: job.id, status: v })}>
+                          <SelectTrigger className="w-28 h-7 text-xs"><SelectValue /></SelectTrigger>
                           <SelectContent>
                             {['applied', 'interview', 'offer', 'rejected', 'pending'].map(s => (
                               <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteJob(job.id)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeJob(job.id)}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>

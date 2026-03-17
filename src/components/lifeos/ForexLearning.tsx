@@ -7,37 +7,39 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { useLocalStorage } from './shared/useLocalStorage';
-import { ForexTrade, ForexClass } from './shared/types';
 import { Plus, Trash2, TrendingUp, TrendingDown, BarChart3, BookOpen, Bot } from 'lucide-react';
 
 export default function ForexLearning() {
-  const [classes, setClasses] = useLocalStorage<ForexClass[]>('lifeos-forex-classes', []);
-  const [trades, setTrades] = useLocalStorage<ForexTrade[]>('lifeos-forex-trades', []);
+  const { data: classes, insert: insertClass, update: updateClass, remove: removeClass, isLoading: lc } = useSupabaseData<any>('forex_classes');
+  const { data: trades, insert: insertTrade, remove: removeTrade, isLoading: lt } = useSupabaseData<any>('forex_trades');
   const [botNotes, setBotNotes] = useLocalStorage<string>('lifeos-forex-bot', '');
   const [newClass, setNewClass] = useState('');
-  const [newTrade, setNewTrade] = useState<{ pair: string; type: 'buy' | 'sell'; entry: string; exit: string; notes: string }>({ pair: 'EUR/USD', type: 'buy', entry: '', exit: '', notes: '' });
+  const [newTrade, setNewTrade] = useState({ pair: 'EUR/USD', type: 'buy' as 'buy' | 'sell', entry: '', exit: '', notes: '' });
 
-  const addClass = () => {
+  const addClass = async () => {
     if (!newClass.trim()) return;
-    setClasses(prev => [...prev, { id: crypto.randomUUID(), title: newClass, completed: false, notes: '' }]);
+    await insertClass({ title: newClass, completed: false, notes: '' });
     setNewClass('');
   };
 
-  const addTrade = () => {
+  const addTrade = async () => {
     if (!newTrade.entry) return;
     const entry = parseFloat(newTrade.entry);
     const exit = newTrade.exit ? parseFloat(newTrade.exit) : undefined;
     const pl = exit ? (newTrade.type === 'buy' ? exit - entry : entry - exit) * 10000 : undefined;
-    setTrades(prev => [...prev, {
-      id: crypto.randomUUID(), pair: newTrade.pair, type: newTrade.type,
-      entryPrice: entry, exitPrice: exit, profitLoss: pl,
+    await insertTrade({
+      pair: newTrade.pair, type: newTrade.type, entry_price: entry,
+      exit_price: exit ?? null, profit_loss: pl ?? null,
       date: new Date().toISOString().split('T')[0], notes: newTrade.notes,
-    }]);
+    });
     setNewTrade({ pair: 'EUR/USD', type: 'buy', entry: '', exit: '', notes: '' });
   };
 
-  const totalPL = trades.reduce((s, t) => s + (t.profitLoss || 0), 0);
+  const totalPL = trades.reduce((s: number, t: any) => s + (Number(t.profit_loss) || 0), 0);
+
+  if (lc || lt) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -76,13 +78,13 @@ export default function ForexLearning() {
               </div>
             </CardContent>
           </Card>
-          {classes.map(c => (
+          {classes.map((c: any) => (
             <div key={c.id} className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">
-              <Checkbox checked={c.completed} onCheckedChange={() => setClasses(prev => prev.map(x => x.id === c.id ? { ...x, completed: !x.completed } : x))} />
+              <Checkbox checked={c.completed} onCheckedChange={() => updateClass({ id: c.id, completed: !c.completed })} />
               <span className={`text-sm flex-1 ${c.completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                 <BookOpen className="h-3.5 w-3.5 inline mr-1" />{c.title}
               </span>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setClasses(prev => prev.filter(x => x.id !== c.id))}>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeClass(c.id)}>
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>
@@ -107,7 +109,7 @@ export default function ForexLearning() {
               </div>
             </CardContent>
           </Card>
-          {trades.map(t => (
+          {trades.map((t: any) => (
             <div key={t.id} className="flex items-center justify-between p-3 rounded-lg bg-card border border-border">
               <div className="flex items-center gap-2">
                 {t.type === 'buy' ? <TrendingUp className="h-4 w-4 text-primary" /> : <TrendingDown className="h-4 w-4 text-destructive" />}
@@ -116,12 +118,12 @@ export default function ForexLearning() {
                 <span className="text-xs text-muted-foreground">{t.date}</span>
               </div>
               <div className="flex items-center gap-2">
-                {t.profitLoss !== undefined && (
-                  <span className={`font-bold text-sm ${t.profitLoss >= 0 ? 'text-primary' : 'text-destructive'}`}>
-                    {t.profitLoss >= 0 ? '+' : ''}{t.profitLoss.toFixed(1)} pips
+                {t.profit_loss != null && (
+                  <span className={`font-bold text-sm ${Number(t.profit_loss) >= 0 ? 'text-primary' : 'text-destructive'}`}>
+                    {Number(t.profit_loss) >= 0 ? '+' : ''}{Number(t.profit_loss).toFixed(1)} pips
                   </span>
                 )}
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setTrades(prev => prev.filter(x => x.id !== t.id))}>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeTrade(t.id)}>
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>

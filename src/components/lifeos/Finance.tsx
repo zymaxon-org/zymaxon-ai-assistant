@@ -4,45 +4,45 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { Expense, SavingsGoal, WishlistItem } from './shared/types';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { Plus, Trash2, Wallet, PiggyBank, Star } from 'lucide-react';
 
 export default function Finance() {
-  const [expenses, setExpenses] = useLocalStorage<Expense[]>('lifeos-expenses', []);
-  const [savings, setSavings] = useLocalStorage<SavingsGoal[]>('lifeos-savings', []);
-  const [wishlist, setWishlist] = useLocalStorage<WishlistItem[]>('lifeos-wishlist', []);
+  const { data: expenses, insert: insertExpense, remove: removeExpense, isLoading: le } = useSupabaseData<any>('expenses');
+  const { data: savings, insert: insertSaving, update: updateSaving, isLoading: ls } = useSupabaseData<any>('savings_goals');
+  const { data: wishlist, insert: insertWish, update: updateWish, remove: removeWish, isLoading: lw } = useSupabaseData<any>('wishlist_items');
   const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: '' });
   const [newSaving, setNewSaving] = useState({ title: '', target: '' });
   const [newWish, setNewWish] = useState({ title: '', cost: '' });
 
-  const addExpense = () => {
+  const addExpense = async () => {
     if (!newExpense.description || !newExpense.amount) return;
-    setExpenses(prev => [...prev, {
-      id: crypto.randomUUID(), description: newExpense.description,
-      amount: parseFloat(newExpense.amount), category: newExpense.category || 'General',
-      date: new Date().toISOString().split('T')[0],
-    }]);
+    await insertExpense({
+      description: newExpense.description, amount: parseFloat(newExpense.amount),
+      category: newExpense.category || 'General', date: new Date().toISOString().split('T')[0],
+    });
     setNewExpense({ description: '', amount: '', category: '' });
   };
 
-  const addSaving = () => {
+  const addSaving = async () => {
     if (!newSaving.title || !newSaving.target) return;
-    setSavings(prev => [...prev, { id: crypto.randomUUID(), title: newSaving.title, targetAmount: parseFloat(newSaving.target), currentAmount: 0 }]);
+    await insertSaving({ title: newSaving.title, target_amount: parseFloat(newSaving.target), current_amount: 0 });
     setNewSaving({ title: '', target: '' });
   };
 
-  const addToSaving = (id: string, amount: number) => {
-    setSavings(prev => prev.map(s => s.id === id ? { ...s, currentAmount: Math.min(s.targetAmount, s.currentAmount + amount) } : s));
+  const addToSaving = async (s: any, amount: number) => {
+    await updateSaving({ id: s.id, current_amount: Math.min(Number(s.target_amount), Number(s.current_amount) + amount) });
   };
 
-  const addWish = () => {
+  const addWish = async () => {
     if (!newWish.title) return;
-    setWishlist(prev => [...prev, { id: crypto.randomUUID(), title: newWish.title, estimatedCost: parseFloat(newWish.cost) || 0, purchased: false }]);
+    await insertWish({ title: newWish.title, estimated_cost: parseFloat(newWish.cost) || 0, purchased: false });
     setNewWish({ title: '', cost: '' });
   };
 
-  const total = expenses.reduce((s, e) => s + e.amount, 0);
+  const total = expenses.reduce((s: number, e: any) => s + Number(e.amount), 0);
+
+  if (le || ls || lw) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -80,15 +80,15 @@ export default function Finance() {
             </CardContent>
           </Card>
           <div className="space-y-2">
-            {expenses.map(e => (
+            {expenses.map((e: any) => (
               <div key={e.id} className="flex items-center justify-between p-3 rounded-lg bg-card border border-border">
                 <div>
                   <span className="text-sm font-medium text-foreground">{e.description}</span>
                   <span className="text-xs text-muted-foreground ml-2">{e.category} · {e.date}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-foreground">₦{e.amount.toLocaleString()}</span>
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setExpenses(prev => prev.filter(x => x.id !== e.id))}>
+                  <span className="font-bold text-foreground">₦{Number(e.amount).toLocaleString()}</span>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeExpense(e.id)}>
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>
@@ -107,17 +107,17 @@ export default function Finance() {
               </div>
             </CardContent>
           </Card>
-          {savings.map(s => (
+          {savings.map((s: any) => (
             <Card key={s.id} className="bg-card border-border">
               <CardContent className="pt-4 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-foreground flex items-center gap-2"><PiggyBank className="h-4 w-4 text-primary" />{s.title}</span>
-                  <span className="text-sm text-muted-foreground">₦{s.currentAmount.toLocaleString()} / ₦{s.targetAmount.toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">₦{Number(s.current_amount).toLocaleString()} / ₦{Number(s.target_amount).toLocaleString()}</span>
                 </div>
-                <Progress value={(s.currentAmount / s.targetAmount) * 100} className="h-2" />
+                <Progress value={Number(s.target_amount) > 0 ? (Number(s.current_amount) / Number(s.target_amount)) * 100 : 0} className="h-2" />
                 <div className="flex gap-1">
                   {[500, 1000, 5000].map(amt => (
-                    <Button key={amt} size="sm" variant="outline" className="text-xs h-7" onClick={() => addToSaving(s.id, amt)}>+₦{amt.toLocaleString()}</Button>
+                    <Button key={amt} size="sm" variant="outline" className="text-xs h-7" onClick={() => addToSaving(s, amt)}>+₦{amt.toLocaleString()}</Button>
                   ))}
                 </div>
               </CardContent>
@@ -135,18 +135,18 @@ export default function Finance() {
               </div>
             </CardContent>
           </Card>
-          {wishlist.map(w => (
+          {wishlist.map((w: any) => (
             <div key={w.id} className="flex items-center justify-between p-3 rounded-lg bg-card border border-border">
               <div className="flex items-center gap-2">
                 <Star className={`h-4 w-4 ${w.purchased ? 'text-primary fill-primary' : 'text-muted-foreground'}`} />
                 <span className={`text-sm ${w.purchased ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{w.title}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">₦{w.estimatedCost.toLocaleString()}</span>
-                <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => setWishlist(prev => prev.map(x => x.id === w.id ? { ...x, purchased: !x.purchased } : x))}>
+                <span className="text-sm text-muted-foreground">₦{Number(w.estimated_cost).toLocaleString()}</span>
+                <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => updateWish({ id: w.id, purchased: !w.purchased })}>
                   {w.purchased ? 'Undo' : 'Bought'}
                 </Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setWishlist(prev => prev.filter(x => x.id !== w.id))}>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeWish(w.id)}>
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>

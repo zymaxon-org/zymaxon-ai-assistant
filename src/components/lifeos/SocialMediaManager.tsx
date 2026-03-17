@@ -6,8 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { SocialPost, SocialMetric } from './shared/types';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { Plus, Trash2, Instagram, Linkedin, Facebook, Share2 } from 'lucide-react';
 
 const PLATFORMS = ['instagram', 'tiktok', 'facebook', 'linkedin'] as const;
@@ -25,35 +24,31 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default function SocialMediaManager() {
-  const [posts, setPosts] = useLocalStorage<SocialPost[]>('lifeos-social-posts', []);
-  const [metrics, setMetrics] = useLocalStorage<SocialMetric[]>('lifeos-social-metrics', []);
-  const [newPost, setNewPost] = useState({ platform: 'instagram' as SocialPost['platform'], content: '', date: '' });
+  const { data: posts, insert: insertPost, update: updatePost, remove: removePost, isLoading: lp } = useSupabaseData<any>('social_posts');
+  const { data: metrics, insert: insertMetric, isLoading: lm } = useSupabaseData<any>('social_metrics');
+  const [newPost, setNewPost] = useState({ platform: 'instagram', content: '', date: '' });
   const [newMetric, setNewMetric] = useState({ platform: 'instagram', followers: '', engagement: '' });
 
-  const addPost = () => {
+  const addPost = async () => {
     if (!newPost.content.trim()) return;
-    setPosts(prev => [...prev, {
-      id: crypto.randomUUID(), ...newPost,
-      scheduledDate: newPost.date || new Date().toISOString().split('T')[0],
+    await insertPost({
+      platform: newPost.platform, content: newPost.content,
+      scheduled_date: newPost.date || new Date().toISOString().split('T')[0],
       status: newPost.date ? 'scheduled' : 'draft',
-    }]);
+    });
     setNewPost({ platform: 'instagram', content: '', date: '' });
   };
 
-  const addMetric = () => {
+  const addMetric = async () => {
     if (!newMetric.followers) return;
-    setMetrics(prev => [...prev, {
-      platform: newMetric.platform,
-      followers: parseInt(newMetric.followers),
-      engagement: parseFloat(newMetric.engagement) || 0,
-      date: new Date().toISOString().split('T')[0],
-    }]);
+    await insertMetric({
+      platform: newMetric.platform, followers: parseInt(newMetric.followers),
+      engagement: parseFloat(newMetric.engagement) || 0, date: new Date().toISOString().split('T')[0],
+    });
     setNewMetric({ platform: 'instagram', followers: '', engagement: '' });
   };
 
-  const updateStatus = (id: string, status: SocialPost['status']) => {
-    setPosts(prev => prev.map(p => p.id === id ? { ...p, status } : p));
-  };
+  if (lp || lm) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -72,7 +67,7 @@ export default function SocialMediaManager() {
           <Card className="bg-card border-border">
             <CardContent className="pt-4 space-y-2">
               <div className="flex gap-2 flex-wrap">
-                <Select value={newPost.platform} onValueChange={v => setNewPost(p => ({ ...p, platform: v as SocialPost['platform'] }))}>
+                <Select value={newPost.platform} onValueChange={v => setNewPost(p => ({ ...p, platform: v }))}>
                   <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {PLATFORMS.map(p => <SelectItem key={p} value={p} className="capitalize">{p}</SelectItem>)}
@@ -85,7 +80,7 @@ export default function SocialMediaManager() {
             </CardContent>
           </Card>
 
-          {posts.map(post => (
+          {posts.map((post: any) => (
             <Card key={post.id} className="bg-card border-border">
               <CardContent className="py-3">
                 <div className="flex items-start justify-between gap-2">
@@ -94,18 +89,18 @@ export default function SocialMediaManager() {
                       {PLATFORM_ICONS[post.platform]}
                       <span className="capitalize text-sm font-medium text-foreground">{post.platform}</span>
                       <Badge className={`text-[10px] ${STATUS_STYLES[post.status]}`}>{post.status}</Badge>
-                      <span className="text-xs text-muted-foreground">{post.scheduledDate}</span>
+                      <span className="text-xs text-muted-foreground">{post.scheduled_date}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">{post.content}</p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Select value={post.status} onValueChange={v => updateStatus(post.id, v as SocialPost['status'])}>
+                    <Select value={post.status} onValueChange={v => updatePost({ id: post.id, status: v })}>
                       <SelectTrigger className="w-24 h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {['draft', 'scheduled', 'published'].map(s => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
                       </SelectContent>
                     </Select>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setPosts(prev => prev.filter(p => p.id !== post.id))}>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removePost(post.id)}>
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -132,7 +127,7 @@ export default function SocialMediaManager() {
             </CardContent>
           </Card>
           {PLATFORMS.map(platform => {
-            const pm = metrics.filter(m => m.platform === platform);
+            const pm = metrics.filter((m: any) => m.platform === platform);
             const latest = pm[pm.length - 1];
             return (
               <Card key={platform} className="bg-card border-border">
@@ -144,7 +139,7 @@ export default function SocialMediaManager() {
                     </div>
                     {latest ? (
                       <div className="text-right">
-                        <p className="text-sm font-bold text-foreground">{latest.followers.toLocaleString()} followers</p>
+                        <p className="text-sm font-bold text-foreground">{Number(latest.followers).toLocaleString()} followers</p>
                         <p className="text-xs text-muted-foreground">{latest.engagement}% engagement</p>
                       </div>
                     ) : (
