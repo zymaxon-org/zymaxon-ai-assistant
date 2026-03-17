@@ -30,7 +30,7 @@ export function useSupabaseData<T extends Record<string, any>>(
       }
       const { data, error } = await query;
       if (error) throw error;
-      return data as T[];
+      return data as unknown as T[];
     },
     enabled: !!user,
   });
