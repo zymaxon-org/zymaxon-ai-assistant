@@ -5,47 +5,36 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { SkillCourse } from './shared/types';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { Plus, Trash2, Code2, Calendar } from 'lucide-react';
 
-const DEFAULTS: SkillCourse[] = [
-  { id: '1', name: 'Linux', lessons: [], notes: '' },
-  { id: '2', name: 'Kubernetes', deadline: '2025-05-12', lessons: [], notes: '' },
-];
-
 export default function SkillsCourses() {
-  const [courses, setCourses] = useLocalStorage<SkillCourse[]>('lifeos-skills', DEFAULTS);
+  const { data: courses, insert, update, remove, isLoading } = useSupabaseData<any>('skill_courses');
   const [newLesson, setNewLesson] = useState<Record<string, string>>({});
 
-  const addLesson = (courseId: string) => {
+  const addLesson = async (courseId: string, course: any) => {
     const title = newLesson[courseId]?.trim();
     if (!title) return;
-    setCourses(prev => prev.map(c =>
-      c.id === courseId ? { ...c, lessons: [...c.lessons, { id: crypto.randomUUID(), title, completed: false }] } : c
-    ));
+    const lessons = Array.isArray(course.lessons) ? course.lessons : [];
+    await update({ id: courseId, lessons: [...lessons, { id: crypto.randomUUID(), title, completed: false }] });
     setNewLesson(p => ({ ...p, [courseId]: '' }));
   };
 
-  const toggleLesson = (courseId: string, lessonId: string) => {
-    setCourses(prev => prev.map(c =>
-      c.id === courseId ? { ...c, lessons: c.lessons.map(l => l.id === lessonId ? { ...l, completed: !l.completed } : l) } : c
-    ));
+  const toggleLesson = async (courseId: string, lessonId: string, course: any) => {
+    const lessons = Array.isArray(course.lessons) ? course.lessons : [];
+    await update({ id: courseId, lessons: lessons.map((l: any) => l.id === lessonId ? { ...l, completed: !l.completed } : l) });
   };
 
-  const deleteLesson = (courseId: string, lessonId: string) => {
-    setCourses(prev => prev.map(c =>
-      c.id === courseId ? { ...c, lessons: c.lessons.filter(l => l.id !== lessonId) } : c
-    ));
+  const deleteLesson = async (courseId: string, lessonId: string, course: any) => {
+    const lessons = Array.isArray(course.lessons) ? course.lessons : [];
+    await update({ id: courseId, lessons: lessons.filter((l: any) => l.id !== lessonId) });
   };
 
-  const updateNotes = (courseId: string, notes: string) => {
-    setCourses(prev => prev.map(c => c.id === courseId ? { ...c, notes } : c));
+  const addCourse = async () => {
+    await insert({ name: 'New Course', lessons: [], notes: '' });
   };
 
-  const addCourse = () => {
-    setCourses(prev => [...prev, { id: crypto.randomUUID(), name: 'New Course', lessons: [], notes: '' }]);
-  };
+  if (isLoading) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -58,9 +47,10 @@ export default function SkillsCourses() {
       </div>
 
       <div className="space-y-4">
-        {courses.map(course => {
-          const done = course.lessons.filter(l => l.completed).length;
-          const total = course.lessons.length;
+        {courses.map((course: any) => {
+          const lessons = Array.isArray(course.lessons) ? course.lessons : [];
+          const done = lessons.filter((l: any) => l.completed).length;
+          const total = lessons.length;
           const pct = total > 0 ? (done / total) * 100 : 0;
 
           return (
@@ -70,11 +60,16 @@ export default function SkillsCourses() {
                   <CardTitle className="text-foreground text-sm flex items-center gap-2">
                     <Code2 className="h-4 w-4 text-primary" /> {course.name}
                   </CardTitle>
-                  {course.deadline && (
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Calendar className="h-3 w-3" /> {course.deadline}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {course.deadline && (
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Calendar className="h-3 w-3" /> {course.deadline}
+                      </span>
+                    )}
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => remove(course.id)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -85,11 +80,11 @@ export default function SkillsCourses() {
                   </div>
                 )}
                 <div className="space-y-1">
-                  {course.lessons.map(lesson => (
+                  {lessons.map((lesson: any) => (
                     <div key={lesson.id} className="flex items-center gap-2 p-1.5 rounded-md hover:bg-muted/50">
-                      <Checkbox checked={lesson.completed} onCheckedChange={() => toggleLesson(course.id, lesson.id)} />
+                      <Checkbox checked={lesson.completed} onCheckedChange={() => toggleLesson(course.id, lesson.id, course)} />
                       <span className={`text-sm flex-1 ${lesson.completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{lesson.title}</span>
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteLesson(course.id, lesson.id)}>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteLesson(course.id, lesson.id, course)}>
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
@@ -100,12 +95,12 @@ export default function SkillsCourses() {
                     placeholder="Add lesson..."
                     value={newLesson[course.id] || ''}
                     onChange={e => setNewLesson(p => ({ ...p, [course.id]: e.target.value }))}
-                    onKeyDown={e => e.key === 'Enter' && addLesson(course.id)}
+                    onKeyDown={e => e.key === 'Enter' && addLesson(course.id, course)}
                     className="text-sm"
                   />
-                  <Button size="sm" onClick={() => addLesson(course.id)}>Add</Button>
+                  <Button size="sm" onClick={() => addLesson(course.id, course)}>Add</Button>
                 </div>
-                <Textarea placeholder="Notes..." value={course.notes} onChange={e => updateNotes(course.id, e.target.value)} className="min-h-[50px] text-sm" />
+                <Textarea placeholder="Notes..." value={course.notes} onChange={e => update({ id: course.id, notes: e.target.value })} className="min-h-[50px] text-sm" />
               </CardContent>
             </Card>
           );

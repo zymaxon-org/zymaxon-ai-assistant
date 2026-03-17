@@ -5,32 +5,26 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { GrowthItem } from './shared/types';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { Plus, Trash2, BookOpen, Heart, PenLine, Church } from 'lucide-react';
 
-const ICONS = { bible: BookOpen, sermon: Church, book: Heart, writing: PenLine };
+const ICONS: Record<string, any> = { bible: BookOpen, sermon: Church, book: Heart, writing: PenLine };
+const labels: Record<string, string> = { bible: 'Bible Study', sermon: 'Sermons', book: 'Spiritual Books', writing: 'Writing' };
 
 export default function PersonalGrowth() {
-  const [items, setItems] = useLocalStorage<GrowthItem[]>('lifeos-growth', []);
+  const { data: items, insert, update, remove, isLoading } = useSupabaseData<any>('growth_items');
   const [newTitle, setNewTitle] = useState('');
-  const [activeTab, setActiveTab] = useState<GrowthItem['type']>('bible');
+  const [activeTab, setActiveTab] = useState('bible');
 
-  const add = () => {
+  const add = async () => {
     if (!newTitle.trim()) return;
-    setItems(prev => [...prev, { id: crypto.randomUUID(), type: activeTab, title: newTitle, progressPercent: 0, notes: '' }]);
+    await insert({ type: activeTab, title: newTitle, progress_percent: 0, notes: '' });
     setNewTitle('');
   };
 
-  const update = (id: string, field: Partial<GrowthItem>) => {
-    setItems(prev => prev.map(i => i.id === id ? { ...i, ...field } : i));
-  };
+  const filtered = items.filter((i: any) => i.type === activeTab);
 
-  const remove = (id: string) => setItems(prev => prev.filter(i => i.id !== id));
-
-  const filtered = items.filter(i => i.type === activeTab);
-
-  const labels = { bible: 'Bible Study', sermon: 'Sermons', book: 'Spiritual Books', writing: 'Writing' };
+  if (isLoading) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -39,14 +33,14 @@ export default function PersonalGrowth() {
         <p className="text-muted-foreground mt-1">Spiritual life, reading, and writing</p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={v => setActiveTab(v as GrowthItem['type'])}>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          {(Object.keys(labels) as GrowthItem['type'][]).map(k => (
+          {Object.keys(labels).map(k => (
             <TabsTrigger key={k} value={k}>{labels[k]}</TabsTrigger>
           ))}
         </TabsList>
 
-        {(Object.keys(labels) as GrowthItem['type'][]).map(type => (
+        {Object.keys(labels).map(type => (
           <TabsContent key={type} value={type} className="space-y-4 mt-4">
             <Card className="bg-card border-border">
               <CardContent className="pt-4">
@@ -60,8 +54,8 @@ export default function PersonalGrowth() {
             {filtered.length === 0 ? (
               <p className="text-center text-muted-foreground text-sm py-8">No items yet.</p>
             ) : (
-              filtered.map(item => {
-                const Icon = ICONS[item.type];
+              filtered.map((item: any) => {
+                const Icon = ICONS[item.type] || BookOpen;
                 return (
                   <Card key={item.id} className="bg-card border-border">
                     <CardHeader className="pb-2">
@@ -76,10 +70,10 @@ export default function PersonalGrowth() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center gap-3">
-                        <Slider value={[item.progressPercent]} onValueChange={([v]) => update(item.id, { progressPercent: v })} max={100} step={5} className="flex-1" />
-                        <span className="text-sm font-bold text-foreground w-10 text-right">{item.progressPercent}%</span>
+                        <Slider value={[item.progress_percent]} onValueChange={([v]) => update({ id: item.id, progress_percent: v })} max={100} step={5} className="flex-1" />
+                        <span className="text-sm font-bold text-foreground w-10 text-right">{item.progress_percent}%</span>
                       </div>
-                      <Textarea placeholder="Notes..." value={item.notes} onChange={e => update(item.id, { notes: e.target.value })} className="min-h-[50px] text-sm" />
+                      <Textarea placeholder="Notes..." value={item.notes} onChange={e => update({ id: item.id, notes: e.target.value })} className="min-h-[50px] text-sm" />
                     </CardContent>
                   </Card>
                 );

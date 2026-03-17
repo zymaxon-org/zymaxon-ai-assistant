@@ -1,9 +1,10 @@
 import { Routes, Route } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { LifeOSSidebar } from '@/components/lifeos/LifeOSSidebar';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { AuthProvider, useAuth } from '@/components/lifeos/shared/AuthProvider';
 import { lazy, Suspense } from 'react';
 
+const Auth = lazy(() => import('@/components/lifeos/Auth'));
 const Dashboard = lazy(() => import('@/components/lifeos/Dashboard'));
 const AcademicManager = lazy(() => import('@/components/lifeos/AcademicManager'));
 const SiwesTracker = lazy(() => import('@/components/lifeos/SiwesTracker'));
@@ -22,7 +23,20 @@ const WeeklyReview = lazy(() => import('@/components/lifeos/WeeklyReview'));
 
 const Loading = () => <div className="flex items-center justify-center h-40 text-muted-foreground">Loading...</div>;
 
-export default function LifeOS() {
+function AuthenticatedApp() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="auth" element={<Auth />} />
+          <Route path="*" element={<Auth />} />
+        </Routes>
+      </Suspense>
+    );
+  }
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -56,5 +70,13 @@ export default function LifeOS() {
         </div>
       </div>
     </SidebarProvider>
+  );
+}
+
+export default function LifeOS() {
+  return (
+    <AuthProvider>
+      <AuthenticatedApp />
+    </AuthProvider>
   );
 }

@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useLocalStorage } from './shared/useLocalStorage';
 import { Play, Pause, RotateCcw, Timer, Coffee } from 'lucide-react';
 
 export default function PomodoroTimer() {
-  const [sessions, setSessions] = useLocalStorage<number>('lifeos-pomodoro-sessions', 0);
+  // Pomodoro sessions kept in local state (ephemeral per-session counter)
+  const [sessions, setSessions] = useState(0);
   const [isWork, setIsWork] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
@@ -57,13 +57,8 @@ export default function PomodoroTimer() {
             <div className="relative w-48 h-48">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="45" fill="none" className="stroke-muted" strokeWidth="4" />
-                <circle
-                  cx="50" cy="50" r="45" fill="none"
-                  className="stroke-primary"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  strokeDasharray={`${progress * 2.83} ${283 - progress * 2.83}`}
-                />
+                <circle cx="50" cy="50" r="45" fill="none" className="stroke-primary" strokeWidth="4" strokeLinecap="round"
+                  strokeDasharray={`${progress * 2.83} ${283 - progress * 2.83}`} />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-4xl font-display font-bold text-foreground">

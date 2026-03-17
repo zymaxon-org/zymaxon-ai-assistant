@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { Habit } from './shared/types';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { Plus, Trash2, Target, Flame, Check } from 'lucide-react';
 
 export default function HabitTracker() {
-  const [habits, setHabits] = useLocalStorage<Habit[]>('lifeos-habits', []);
+  const { data: habits, insert, update, remove, isLoading } = useSupabaseData<any>('habits');
   const [newHabit, setNewHabit] = useState('');
 
   const today = new Date().toISOString().split('T')[0];
@@ -17,34 +16,36 @@ export default function HabitTracker() {
     return d.toISOString().split('T')[0];
   });
 
-  const addHabit = () => {
+  const addHabit = async () => {
     if (!newHabit.trim()) return;
-    setHabits(prev => [...prev, { id: crypto.randomUUID(), name: newHabit, completedDates: [] }]);
+    await insert({ name: newHabit, completed_dates: [] });
     setNewHabit('');
   };
 
-  const toggleDay = (habitId: string, date: string) => {
-    setHabits(prev => prev.map(h => {
-      if (h.id !== habitId) return h;
-      const has = h.completedDates.includes(date);
-      return { ...h, completedDates: has ? h.completedDates.filter(d => d !== date) : [...h.completedDates, date] };
-    }));
+  const toggleDay = async (habit: any, date: string) => {
+    const dates = Array.isArray(habit.completed_dates) ? habit.completed_dates : [];
+    const has = dates.includes(date);
+    await update({
+      id: habit.id,
+      completed_dates: has ? dates.filter((d: string) => d !== date) : [...dates, date],
+    });
   };
 
-  const getStreak = (habit: Habit) => {
+  const getStreak = (habit: any) => {
+    const dates = Array.isArray(habit.completed_dates) ? habit.completed_dates : [];
     let streak = 0;
     const d = new Date();
     while (true) {
       const dateStr = d.toISOString().split('T')[0];
-      if (habit.completedDates.includes(dateStr)) {
-        streak++;
-        d.setDate(d.getDate() - 1);
-      } else break;
+      if (dates.includes(dateStr)) { streak++; d.setDate(d.getDate() - 1); }
+      else break;
     }
     return streak;
   };
 
   const dayLabels = last7Days.map(d => new Date(d).toLocaleDateString('en', { weekday: 'short' }).slice(0, 2));
+
+  if (isLoading) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -80,8 +81,9 @@ export default function HabitTracker() {
                   </tr>
                 </thead>
                 <tbody>
-                  {habits.map(habit => {
+                  {habits.map((habit: any) => {
                     const streak = getStreak(habit);
+                    const dates = Array.isArray(habit.completed_dates) ? habit.completed_dates : [];
                     return (
                       <tr key={habit.id} className="border-t border-border">
                         <td className="py-2 pr-4">
@@ -90,15 +92,11 @@ export default function HabitTracker() {
                           </span>
                         </td>
                         {last7Days.map(date => {
-                          const done = habit.completedDates.includes(date);
+                          const done = dates.includes(date);
                           return (
                             <td key={date} className="text-center py-2">
-                              <button
-                                onClick={() => toggleDay(habit.id, date)}
-                                className={`w-8 h-8 rounded-md flex items-center justify-center transition-colors ${
-                                  done ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'
-                                }`}
-                              >
+                              <button onClick={() => toggleDay(habit, date)}
+                                className={`w-8 h-8 rounded-md flex items-center justify-center transition-colors ${done ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'}`}>
                                 {done && <Check className="h-4 w-4" />}
                               </button>
                             </td>
@@ -111,7 +109,7 @@ export default function HabitTracker() {
                           </span>
                         </td>
                         <td className="py-2">
-                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setHabits(prev => prev.filter(h => h.id !== habit.id))}>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => remove(habit.id)}>
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
                         </td>

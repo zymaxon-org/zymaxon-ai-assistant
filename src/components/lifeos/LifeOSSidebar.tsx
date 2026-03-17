@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, BookOpen, Briefcase, GraduationCap, TrendingUp,
   Code2, Heart, Wallet, BarChart3, Share2, Rocket, Timer, Target,
-  CalendarDays, ClipboardList, Moon, Sun, ChevronLeft
+  CalendarDays, ClipboardList, Moon, Sun, ChevronLeft, LogOut
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import { useAuth } from './shared/AuthProvider';
 
 const mainSections = [
   { title: 'Dashboard', url: '/lifeos', icon: LayoutDashboard },
@@ -39,17 +40,13 @@ export function LifeOSSidebar() {
   const collapsed = state === 'collapsed';
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
     localStorage.setItem('lifeos-theme', dark ? 'dark' : 'light');
   }, [dark]);
-
-  const isActive = (url: string) => {
-    if (url === '/lifeos') return location.pathname === '/lifeos';
-    return location.pathname.startsWith(url);
-  };
 
   return (
     <Sidebar collapsible="icon">
@@ -115,8 +112,14 @@ export function LifeOSSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
-        <div className="px-2 py-1 text-xs text-muted-foreground text-center">
-          {!collapsed && 'LifeOS v1.0'}
+        <div className="px-2 py-2 space-y-2">
+          {!collapsed && user && (
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+          )}
+          <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-destructive" onClick={signOut}>
+            <LogOut className="h-4 w-4 mr-2" />
+            {!collapsed && 'Sign out'}
+          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>

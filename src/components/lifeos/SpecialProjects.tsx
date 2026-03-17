@@ -4,50 +4,42 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
-import { Progress } from '@/components/ui/progress';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { SpecialProject, Task } from './shared/types';
-import { TaskItem } from './shared/TaskItem';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { Plus, Trash2, Rocket } from 'lucide-react';
 
 export default function SpecialProjects() {
-  const [projects, setProjects] = useLocalStorage<SpecialProject[]>('lifeos-special', [
-    { id: '1', title: '72-Hour Coding Challenge', description: 'Build something awesome in 72 hours', progressPercent: 0, tasks: [] },
-    { id: '2', title: 'Website Security Experiments', description: 'Learn and practice web security', progressPercent: 0, tasks: [] },
-  ]);
+  const { data: projects, insert, update, remove, isLoading } = useSupabaseData<any>('special_projects');
   const [newProject, setNewProject] = useState('');
-  const [newTask, setNewTask] = useState<Record<string, string>>({});
 
-  const addProject = () => {
+  const addProject = async () => {
     if (!newProject.trim()) return;
-    setProjects(prev => [...prev, { id: crypto.randomUUID(), title: newProject, description: '', progressPercent: 0, tasks: [] }]);
+    await insert({ title: newProject, description: '', progress_percent: 0, tasks: [] });
     setNewProject('');
   };
 
-  const update = (id: string, field: Partial<SpecialProject>) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, ...field } : p));
+  const addTaskToProject = async (project: any, title: string) => {
+    if (!title.trim()) return;
+    const tasks = Array.isArray(project.tasks) ? project.tasks : [];
+    await update({
+      id: project.id,
+      tasks: [...tasks, { id: crypto.randomUUID(), title, priority: 'important', progressPercent: 0, completed: false }],
+    });
   };
 
-  const addTaskToProject = (projectId: string) => {
-    const title = newTask[projectId]?.trim();
-    if (!title) return;
-    setProjects(prev => prev.map(p => p.id === projectId ? {
-      ...p, tasks: [...p.tasks, { id: crypto.randomUUID(), title, priority: 'important', progressPercent: 0, completed: false }]
-    } : p));
-    setNewTask(prev => ({ ...prev, [projectId]: '' }));
+  const toggleTask = async (project: any, taskId: string) => {
+    const tasks = Array.isArray(project.tasks) ? project.tasks : [];
+    await update({
+      id: project.id,
+      tasks: tasks.map((t: any) => t.id === taskId ? { ...t, completed: !t.completed } : t),
+    });
   };
 
-  const toggleTask = (projectId: string, taskId: string) => {
-    setProjects(prev => prev.map(p => p.id === projectId ? {
-      ...p, tasks: p.tasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t)
-    } : p));
+  const deleteTask = async (project: any, taskId: string) => {
+    const tasks = Array.isArray(project.tasks) ? project.tasks : [];
+    await update({ id: project.id, tasks: tasks.filter((t: any) => t.id !== taskId) });
   };
 
-  const deleteTask = (projectId: string, taskId: string) => {
-    setProjects(prev => prev.map(p => p.id === projectId ? {
-      ...p, tasks: p.tasks.filter(t => t.id !== taskId)
-    } : p));
-  };
+  if (isLoading) return <div className="text-muted-foreground">Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -62,44 +54,54 @@ export default function SpecialProjects() {
         </div>
       </div>
 
-      {projects.map(project => (
-        <Card key={project.id} className="bg-card border-border">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-foreground flex items-center gap-2">
-                <Rocket className="h-4 w-4 text-primary" /> {project.title}
-              </CardTitle>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setProjects(prev => prev.filter(p => p.id !== project.id))}>
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Textarea placeholder="Description..." value={project.description} onChange={e => update(project.id, { description: e.target.value })} className="min-h-[50px] text-sm" />
-            <div className="flex items-center gap-3">
-              <Slider value={[project.progressPercent]} onValueChange={([v]) => update(project.id, { progressPercent: v })} max={100} step={5} className="flex-1" />
-              <span className="text-sm font-bold text-foreground w-10 text-right">{project.progressPercent}%</span>
-            </div>
+      {projects.map((project: any) => {
+        const tasks = Array.isArray(project.tasks) ? project.tasks : [];
+        return (
+          <Card key={project.id} className="bg-card border-border">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-foreground flex items-center gap-2">
+                  <Rocket className="h-4 w-4 text-primary" /> {project.title}
+                </CardTitle>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => remove(project.id)}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Textarea placeholder="Description..." value={project.description} onChange={e => update({ id: project.id, description: e.target.value })} className="min-h-[50px] text-sm" />
+              <div className="flex items-center gap-3">
+                <Slider value={[project.progress_percent]} onValueChange={([v]) => update({ id: project.id, progress_percent: v })} max={100} step={5} className="flex-1" />
+                <span className="text-sm font-bold text-foreground w-10 text-right">{project.progress_percent}%</span>
+              </div>
 
-            <div className="space-y-2">
-              {project.tasks.map(task => (
-                <TaskItem key={task.id} task={task} onToggle={(id) => toggleTask(project.id, id)} onDelete={(id) => deleteTask(project.id, id)} />
-              ))}
-            </div>
+              <div className="space-y-2">
+                {tasks.map((task: any) => (
+                  <div key={task.id} className="flex items-center gap-3 p-2 rounded-lg border bg-muted/50">
+                    <input type="checkbox" checked={task.completed} onChange={() => toggleTask(project, task.id)} className="rounded" />
+                    <span className={`text-sm flex-1 ${task.completed ? 'line-through text-muted-foreground' : 'text-foreground'}`}>{task.title}</span>
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => deleteTask(project, task.id)}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
 
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add task..."
-                value={newTask[project.id] || ''}
-                onChange={e => setNewTask(p => ({ ...p, [project.id]: e.target.value }))}
-                onKeyDown={e => e.key === 'Enter' && addTaskToProject(project.id)}
-                className="text-sm"
-              />
-              <Button size="sm" onClick={() => addTaskToProject(project.id)}>Add</Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+              <TaskInput onAdd={(title) => addTaskToProject(project, title)} />
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+function TaskInput({ onAdd }: { onAdd: (title: string) => void }) {
+  const [val, setVal] = useState('');
+  return (
+    <div className="flex gap-2">
+      <Input placeholder="Add task..." value={val} onChange={e => setVal(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { onAdd(val); setVal(''); } }} className="text-sm" />
+      <Button size="sm" onClick={() => { onAdd(val); setVal(''); }}>Add</Button>
     </div>
   );
 }

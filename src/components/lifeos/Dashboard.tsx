@@ -1,26 +1,30 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useLocalStorage } from './shared/useLocalStorage';
-import { Task, Habit, Expense, JobApplication } from './shared/types';
-import { ProgressCard } from './shared/ProgressCard';
-import { TaskItem } from './shared/TaskItem';
+import { useSupabaseData } from './shared/useSupabaseData';
 import { BookOpen, Briefcase, Wallet, Target, Clock, CheckCircle2 } from 'lucide-react';
 
 export default function Dashboard() {
-  const [tasks] = useLocalStorage<Task[]>('lifeos-daily-tasks', []);
-  const [habits] = useLocalStorage<Habit[]>('lifeos-habits', []);
-  const [expenses] = useLocalStorage<Expense[]>('lifeos-expenses', []);
-  const [jobs] = useLocalStorage<JobApplication[]>('lifeos-jobs', []);
+  const { data: tasks, isLoading: loadingTasks } = useSupabaseData<any>('tasks');
+  const { data: habits, isLoading: loadingHabits } = useSupabaseData<any>('habits');
+  const { data: expenses, isLoading: loadingExpenses } = useSupabaseData<any>('expenses');
+  const { data: jobs, isLoading: loadingJobs } = useSupabaseData<any>('job_applications');
 
   const today = new Date().toISOString().split('T')[0];
-  const todayTasks = tasks.filter(t => t.deadline === today || !t.deadline);
-  const completedToday = todayTasks.filter(t => t.completed).length;
-  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
-  const activeHabits = habits.filter(h => h.completedDates.includes(today)).length;
+  const todayTasks = tasks.filter((t: any) => t.deadline === today || !t.deadline);
+  const completedToday = todayTasks.filter((t: any) => t.completed).length;
+  const totalExpenses = expenses.reduce((s: number, e: any) => s + Number(e.amount), 0);
+  const activeHabits = habits.filter((h: any) => {
+    const dates = Array.isArray(h.completed_dates) ? h.completed_dates : [];
+    return dates.includes(today);
+  }).length;
 
   const upcomingDeadlines = tasks
-    .filter(t => t.deadline && !t.completed && new Date(t.deadline) >= new Date())
-    .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime())
+    .filter((t: any) => t.deadline && !t.completed && new Date(t.deadline) >= new Date())
+    .sort((a: any, b: any) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
     .slice(0, 5);
+
+  const isLoading = loadingTasks || loadingHabits || loadingExpenses || loadingJobs;
+
+  if (isLoading) return <div className="text-muted-foreground">Loading dashboard...</div>;
 
   return (
     <div className="space-y-6">
@@ -80,11 +84,11 @@ export default function Dashboard() {
               <p className="text-sm text-muted-foreground">No upcoming deadlines.</p>
             ) : (
               <div className="space-y-2">
-                {upcomingDeadlines.map(t => (
+                {upcomingDeadlines.map((t: any) => (
                   <div key={t.id} className="flex justify-between items-center p-2 rounded-md bg-muted/50">
                     <span className="text-sm text-foreground">{t.title}</span>
                     <span className="text-xs text-muted-foreground">
-                      {new Date(t.deadline!).toLocaleDateString()}
+                      {new Date(t.deadline).toLocaleDateString()}
                     </span>
                   </div>
                 ))}
@@ -100,7 +104,7 @@ export default function Dashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <ProgressCard title="Academic Progress" progress={0} subtitle="Add courses to track" icon={<BookOpen className="h-4 w-4 text-primary" />} />
+            <p className="text-sm text-muted-foreground">Add data across sections to see stats here.</p>
           </CardContent>
         </Card>
       </div>
