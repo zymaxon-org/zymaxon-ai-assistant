@@ -323,6 +323,279 @@ export type Database = {
         }
         Relationships: []
       }
+      okads_admin_users: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      okads_cart_items: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "okads_cart_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "okads_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      okads_categories: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      okads_customers: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          full_name: string
+          id: string
+          phone: string
+          state: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string
+          city?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          state?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          state?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      okads_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string | null
+          product_name: string
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "okads_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "okads_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "okads_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "okads_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      okads_orders: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          delivery_address: string
+          delivery_fee: number
+          id: string
+          order_number: string
+          payment_reference: string | null
+          status: string
+          total: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          delivery_address?: string
+          delivery_fee?: number
+          id?: string
+          order_number: string
+          payment_reference?: string | null
+          status?: string
+          total?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          delivery_address?: string
+          delivery_fee?: number
+          id?: string
+          order_number?: string
+          payment_reference?: string | null
+          status?: string
+          total?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "okads_orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "okads_customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      okads_products: {
+        Row: {
+          category_id: string | null
+          compare_price: number | null
+          created_at: string
+          description: string
+          featured: boolean
+          id: string
+          image_url: string | null
+          in_stock: boolean
+          name: string
+          price: number
+          slug: string
+          updated_at: string
+          weight_unit: string
+        }
+        Insert: {
+          category_id?: string | null
+          compare_price?: number | null
+          created_at?: string
+          description?: string
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean
+          name: string
+          price?: number
+          slug: string
+          updated_at?: string
+          weight_unit?: string
+        }
+        Update: {
+          category_id?: string | null
+          compare_price?: number | null
+          created_at?: string
+          description?: string
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean
+          name?: string
+          price?: number
+          slug?: string
+          updated_at?: string
+          weight_unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "okads_products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "okads_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       savings_goals: {
         Row: {
           created_at: string
@@ -637,7 +910,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_okads_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
