@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import PitchDeck from "./pages/PitchDeck";
 import VivesaDemo from "./pages/VivesaDemo";
 import LifeOS from "./pages/LifeOS";
+import OkadsSeafood from "./pages/OkadsSeafood";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/pitch-deck" element={<PitchDeck />} />
           <Route path="/vivesa-demo" element={<VivesaDemo />} />
           <Route path="/lifeos/*" element={<LifeOS />} />
+          <Route path="/okads/*" element={<OkadsSeafood />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
