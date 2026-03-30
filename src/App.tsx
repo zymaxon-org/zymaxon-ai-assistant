@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import PitchDeck from "./pages/PitchDeck";
 import VivesaDemo from "./pages/VivesaDemo";
 import LifeOS from "./pages/LifeOS";
+import OkadsSeafood from "./pages/OkadsSeafood";
 
 const queryClient = new QueryClient();
 
