@@ -839,6 +839,673 @@ export type Database = {
         }
         Relationships: []
       }
+      tt_audit_logs: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
+      tt_chat_messages: {
+        Row: {
+          body: string
+          created_at: string
+          flagged: boolean
+          id: string
+          sanitized_body: string
+          sender_id: string | null
+          thread_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          flagged?: boolean
+          id?: string
+          sanitized_body?: string
+          sender_id?: string | null
+          thread_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          flagged?: boolean
+          id?: string
+          sanitized_body?: string
+          sender_id?: string | null
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_chat_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "tt_chat_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_chat_threads: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string | null
+          other_user_id: string | null
+          owner_id: string
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          other_user_id?: string | null
+          owner_id: string
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          other_user_id?: string | null
+          owner_id?: string
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_chat_threads_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "tt_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_found_reports: {
+        Row: {
+          created_at: string
+          finder_anon_token: string | null
+          finder_user_id: string | null
+          id: string
+          location: string | null
+          lost_report_id: string
+          message: string | null
+          photo_url: string | null
+          thread_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          finder_anon_token?: string | null
+          finder_user_id?: string | null
+          id?: string
+          location?: string | null
+          lost_report_id: string
+          message?: string | null
+          photo_url?: string | null
+          thread_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          finder_anon_token?: string | null
+          finder_user_id?: string | null
+          id?: string
+          location?: string | null
+          lost_report_id?: string
+          message?: string | null
+          photo_url?: string | null
+          thread_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_found_reports_lost_report_id_fkey"
+            columns: ["lost_report_id"]
+            isOneToOne: false
+            referencedRelation: "tt_lost_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_fraud_flags: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          reason: string
+          resolved: boolean
+          severity: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          reason: string
+          resolved?: boolean
+          severity?: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          reason?: string
+          resolved?: boolean
+          severity?: string
+        }
+        Relationships: []
+      }
+      tt_items: {
+        Row: {
+          brand: string | null
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          model: string | null
+          name: string
+          owner_id: string
+          photos: Json
+          product_id: string | null
+          purchase_date: string | null
+          serial_number: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          model?: string | null
+          name: string
+          owner_id: string
+          photos?: Json
+          product_id?: string | null
+          purchase_date?: string | null
+          serial_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          model?: string | null
+          name?: string
+          owner_id?: string
+          photos?: Json
+          product_id?: string | null
+          purchase_date?: string | null
+          serial_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "tt_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_lost_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          item_id: string
+          last_location: string | null
+          reported_by: string
+          reward_amount: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_id: string
+          last_location?: string | null
+          reported_by: string
+          reward_amount?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_id?: string
+          last_location?: string | null
+          reported_by?: string
+          reward_amount?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_lost_reports_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "tt_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_manufacturers: {
+        Row: {
+          company_name: string
+          created_at: string
+          description: string | null
+          id: string
+          logo_url: string | null
+          updated_at: string
+          user_id: string
+          verification_status: string
+          verified: boolean
+          website: string | null
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          updated_at?: string
+          user_id: string
+          verification_status?: string
+          verified?: boolean
+          website?: string | null
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo_url?: string | null
+          updated_at?: string
+          user_id?: string
+          verification_status?: string
+          verified?: boolean
+          website?: string | null
+        }
+        Relationships: []
+      }
+      tt_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tt_ownership_history: {
+        Row: {
+          from_user: string | null
+          id: string
+          item_id: string
+          reason: string | null
+          to_user: string | null
+          transferred_at: string
+        }
+        Insert: {
+          from_user?: string | null
+          id?: string
+          item_id: string
+          reason?: string | null
+          to_user?: string | null
+          transferred_at?: string
+        }
+        Update: {
+          from_user?: string | null
+          id?: string
+          item_id?: string
+          reason?: string | null
+          to_user?: string | null
+          transferred_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_ownership_history_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "tt_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_products: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          manufacturer_id: string
+          model: string | null
+          name: string
+          updated_at: string
+          warranty_months: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          manufacturer_id: string
+          model?: string | null
+          name: string
+          updated_at?: string
+          warranty_months?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          manufacturer_id?: string
+          model?: string | null
+          name?: string
+          updated_at?: string
+          warranty_months?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_products_manufacturer_id_fkey"
+            columns: ["manufacturer_id"]
+            isOneToOne: false
+            referencedRelation: "tt_manufacturers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_profiles: {
+        Row: {
+          avatar_url: string | null
+          country: string | null
+          created_at: string
+          full_name: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tt_qr_batches: {
+        Row: {
+          created_at: string
+          id: string
+          manufacturer_id: string
+          name: string
+          product_id: string | null
+          size: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          manufacturer_id: string
+          name: string
+          product_id?: string | null
+          size?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          manufacturer_id?: string
+          name?: string
+          product_id?: string | null
+          size?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_qr_batches_manufacturer_id_fkey"
+            columns: ["manufacturer_id"]
+            isOneToOne: false
+            referencedRelation: "tt_manufacturers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tt_qr_batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "tt_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_qr_codes: {
+        Row: {
+          batch_id: string | null
+          created_at: string
+          id: string
+          item_id: string | null
+          product_id: string | null
+          scan_count: number
+          token: string
+        }
+        Insert: {
+          batch_id?: string | null
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          product_id?: string | null
+          scan_count?: number
+          token: string
+        }
+        Update: {
+          batch_id?: string | null
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          product_id?: string | null
+          scan_count?: number
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_qr_codes_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "tt_qr_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tt_qr_codes_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "tt_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tt_qr_codes_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "tt_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_scans: {
+        Row: {
+          created_at: string
+          id: string
+          ip_city: string | null
+          ip_country: string | null
+          qr_code_id: string | null
+          result: string
+          scanner_user_id: string | null
+          token: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_city?: string | null
+          ip_country?: string | null
+          qr_code_id?: string | null
+          result?: string
+          scanner_user_id?: string | null
+          token?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_city?: string | null
+          ip_country?: string | null
+          qr_code_id?: string | null
+          result?: string
+          scanner_user_id?: string | null
+          token?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_scans_qr_code_id_fkey"
+            columns: ["qr_code_id"]
+            isOneToOne: false
+            referencedRelation: "tt_qr_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_transfers: {
+        Row: {
+          created_at: string
+          from_user: string
+          id: string
+          item_id: string
+          status: string
+          to_user_email: string
+          to_user_id: string | null
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          from_user: string
+          id?: string
+          item_id: string
+          status?: string
+          to_user_email: string
+          to_user_id?: string | null
+          token: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          from_user?: string
+          id?: string
+          item_id?: string
+          status?: string
+          to_user_email?: string
+          to_user_id?: string | null
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tt_transfers_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "tt_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tt_user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["tt_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["tt_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["tt_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_reviews: {
         Row: {
           challenges: string
@@ -911,9 +1578,17 @@ export type Database = {
     }
     Functions: {
       is_okads_admin: { Args: { _user_id: string }; Returns: boolean }
+      tt_has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["tt_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      tt_verify_qr: { Args: { _token: string }; Returns: Json }
     }
     Enums: {
-      [_ in never]: never
+      tt_role: "user" | "manufacturer" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1040,6 +1715,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      tt_role: ["user", "manufacturer", "admin"],
+    },
   },
 } as const
