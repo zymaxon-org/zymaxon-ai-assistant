@@ -31,6 +31,9 @@ export default function VerifyPage() {
         result: !(result as any)?.found ? 'invalid' : isLost ? 'lost' : 'verified',
         user_agent: navigator.userAgent.slice(0, 200),
       });
+      if (qrId) {
+        supabase.functions.invoke('tt-fraud-check', { body: { mode: 'scan', qr_code_id: qrId } }).catch(() => {});
+      }
       setLoading(false);
     })();
   }, [token]);
