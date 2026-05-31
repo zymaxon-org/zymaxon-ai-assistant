@@ -22,6 +22,7 @@ function Inner() {
     await supabase.from('tt_transfers').update({ status: 'accepted' }).eq('id', t.id);
     await supabase.from('tt_items').update({ owner_id: user!.id }).eq('id', t.item_id);
     await supabase.from('tt_ownership_history').insert({ item_id: t.item_id, from_user: t.from_user, to_user: user!.id, reason: 'transfer accepted' });
+    supabase.functions.invoke('tt-fraud-check', { body: { mode: 'transfer', transfer_id: t.id, item_id: t.item_id } }).catch(() => {});
     toast.success('Ownership transferred to you');
     load();
   };
