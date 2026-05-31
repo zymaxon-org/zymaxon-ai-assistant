@@ -25,14 +25,24 @@ export default function ScanPage() {
             stopped = true;
             const m = text.match(/\/trusttag\/verify\/([A-Za-z0-9_-]+)/);
             const token = m ? m[1] : text;
-            ref.current?.stop().then(() => nav(`/trusttag/verify/${token}`));
+            const safeStop = async () => {
+              try {
+                if (ref.current?.getState() === 2) await ref.current.stop();
+              } catch {}
+            };
+            safeStop().then(() => nav(`/trusttag/verify/${token}`));
           },
           () => {},
         );
       } catch {}
     };
     start();
-    return () => { stopped = true; ref.current?.stop().catch(() => {}); };
+    return () => {
+      stopped = true;
+      try {
+        if (ref.current?.getState() === 2) ref.current.stop().catch(() => {});
+      } catch {}
+    };
   }, [mode, nav]);
 
   const goManual = () => {
