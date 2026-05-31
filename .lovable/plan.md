@@ -1,52 +1,56 @@
-# AI Fraud Detection Edge Function
+## Scanner Retry & Auto-Reinit for TrustTag
 
-## Goal
+### Goal
+Make the QR scanner on `/trusttag/scan` resilient to camera failures by surfacing a friendly retry UI and automatically attempting re-initialization up to 3 times.
 
-Add a `tt-fraud-check` Supabase edge function that runs heuristic + AI-assisted fraud analysis and writes results into `tt_fraud_flags` and `tt_audit_logs`. Wire it into the scan flow (and a manual admin trigger).
+### Current Behavior
+- `Html5Qrcode` starts inside `useEffect` when `mode === 'camera'`.
+- Errors during `start()` are swallowed (`catch {}`).
+- No user feedback when the camera fails or the scanner stops unexpectedly.
 
-## Detection rules
+### Planned Changes
 
-1. **Multi-country scan burst** — same `qr_code_id` scanned from >2 distinct `ip_country` values within 24h → severity `high`, reason `multi_country_burst`.
-2. **Duplicate serial numbers** — same `serial_number` (non-empty) across >1 `tt_items` rows → severity `high`, reason `duplicate_serial`. One flag per serial.
-3. **Suspicious transfers** — item with >3 completed transfers in 30 days, OR a transfer chain where the same item bounces between two users → severity `medium`, reason `rapid_transfer_chain`.
-4. **Counterfeit pattern** — QR token scanned >20 times in 1h from >5 countries, OR scan ratio of `invalid` results >50% over last 50 scans → severity `high`, reason `counterfeit_pattern`.
-5. **AI layer** — for any flagged entity, send a compact JSON summary (counts, countries, timestamps, item meta) to Lovable AI Gateway (`google/gemini-2.5-flash`) which returns `{ severity, confidence, explanation, recommended_action }`. AI severity overrides heuristic when confidence ≥ 0.7. Explanation is stored in `metadata.ai_explanation`.
+#### 1. State Additions (ScanPage.tsx)
+- `scanError: string | null` — stores the last human-readable error message.
+- `retryCount: number` — tracks auto-retry attempts (cap at 3).
+- `retryKey: number` — incremented to force `useEffect` re-run on manual retry.
+- `isRetrying: boolean` — shows a spinner/label during auto-retry.
 
-## Edge function: `tt-fraud-check`
+#### 2. Scanner Start Logic
+- Catch `start()` failures and extract a friendly message:
+  - Permission denied: "Camera access denied. Please allow camera permissions and try again."
+  - No camera found: "No camera detected on this device."
+  - Generic / unknown: "Could not start the scanner."
+- Set `scanError` on failure.
+- If `retryCount < 3`, schedule an auto-retry after 2.5 seconds, increment `retryCount`, and clear `scanError` before retrying.
+- On success, reset `retryCount` and `scanError`.
 
-- Path: `supabase/functions/tt-fraud-check/index.ts`
-- Public CORS, no JWT required (called on every public scan). For the admin `mode=full` sweep, requires JWT + admin role.
-- Input: `{ mode: "scan" | "transfer" | "full", qr_code_id?, item_id?, transfer_id? }`.
-- Uses `SUPABASE_SERVICE_ROLE_KEY` to read across RLS.
-- Uses `LOVABLE_API_KEY` (already provisioned for Lovable AI Gateway) — no user secret needed.
-- Writes:
-  - `tt_fraud_flags` (one row per distinct reason+entity, dedup via select-before-insert on unresolved open flags).
-  - `tt_audit_logs` with `action='fraud_check'`, `target_type='qr_code'|'item'|'transfer'`, `metadata` includes rule, counts, AI verdict. Uses a NULL `actor_user_id` — see migration note.
-  - `tt_notifications` to the item owner when a `high` severity flag fires on their item.
+#### 3. UI When Scanner Fails
+Inside the `#tt-scanner` container (replacing the black placeholder), render:
+- An icon (`AlertCircle` or `CameraOff`).
+- The friendly error message.
+- A primary **"Try Again"** button that increments `retryKey` and resets `retryCount`.
+- A subtle "Enter token manually" link that switches to manual mode.
+- During auto-retry: show a small spinner + "Retrying in Xs..." text.
 
-## Migration (small)
+#### 4. Manual Retry Flow
+- Clicking **"Try Again"** clears the existing `Html5Qrcode` instance, resets `retryCount`, increments `retryKey`, and lets `useEffect` re-run.
+- If the user switches modes (`camera` -> `manual` -> `camera`), `retryCount` also resets.
 
-- Allow system-inserted audit rows: relax `tt_audit_logs` INSERT policy so service role / NULL actor entries are accepted (add policy `Service inserts audit` with `WITH CHECK (actor_user_id IS NULL OR auth.uid() = actor_user_id)`).
-- Add unique partial index to prevent duplicate open flags: `CREATE UNIQUE INDEX tt_fraud_flags_open_uniq ON tt_fraud_flags(entity_type, entity_id, reason) WHERE resolved = false;`
+#### 5. Cleanup Safety
+- Keep the existing guard `if (ref.current?.getState() === 2)` before calling `stop()`.
+- Ensure the old instance is fully cleaned up before creating a new one on retry.
 
-## Wiring
+### Files Changed
+- `src/components/trusttag/verify/ScanPage.tsx`
 
-- `src/components/trusttag/verify/VerifyPage.tsx`: after inserting the scan row, fire-and-forget `supabase.functions.invoke('tt-fraud-check', { body: { mode: 'scan', qr_code_id }})`. No await on UI critical path.
-- `src/components/trusttag/user/TransfersPage.tsx`: invoke with `mode: 'transfer', transfer_id` after a transfer is created/accepted.
-- `src/components/trusttag/admin/AdminFraud.tsx`: add a "Run full sweep" button that invokes `mode: 'full'` and reloads the flag list.
+### Out of Scope
+- Changing the `html5-qrcode` library.
+- Adding backend logging for scan failures.
+- Altering the manual entry flow.
 
-## Out of scope
-
-- Email/SMS alerts (notifications stay in-app)
-- ML model training (uses Gemini via Lovable AI Gateway)
-- Auto-locking items (admin still resolves manually)
-
-## Files
-
-- `supabase/migrations/<timestamp>_tt_fraud_audit.sql` (policy + index)
-- `supabase/functions/tt-fraud-check/index.ts` (new)
-- `src/components/trusttag/verify/VerifyPage.tsx` (1 invoke call)
-- `src/components/trusttag/user/TransfersPage.tsx` (1 invoke call)
-- `src/components/trusttag/admin/AdminFraud.tsx` (sweep button)  
-  
-only UI for now
+### Test Checklist
+- [ ] Block camera permission → see error message + Try Again button.
+- [ ] Click Try Again after allowing permission → scanner starts.
+- [ ] Switch to manual and back → retry count resets, scanner re-initializes.
+- [ ] Successful scan still navigates correctly.
