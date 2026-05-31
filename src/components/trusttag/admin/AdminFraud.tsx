@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthGate, RoleGate, TTLayout } from '@/components/trusttag/shared/TTLayout';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
 
 function Inner() {
   const [flags, setFlags] = useState<any[]>([]);
+  const [sweeping, setSweeping] = useState(false);
   const load = async () => {
     const { data } = await supabase.from('tt_fraud_flags').select('*').order('created_at', { ascending: false });
     setFlags(data ?? []);
