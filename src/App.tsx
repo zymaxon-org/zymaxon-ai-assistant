@@ -9,7 +9,7 @@ import PitchDeck from "./pages/PitchDeck";
 import VivesaDemo from "./pages/VivesaDemo";
 import LifeOS from "./pages/LifeOS";
 import OkadsSeafood from "./pages/OkadsSeafood";
-import TrustTag from "./pages/TrustTag";
+import TraceTag, { LegacyTrustTagRedirect } from "./pages/TraceTag";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +25,8 @@ const App = () => (
           <Route path="/vivesa-demo" element={<VivesaDemo />} />
           <Route path="/lifeos/*" element={<LifeOS />} />
           <Route path="/okads/*" element={<OkadsSeafood />} />
-          <Route path="/trusttag/*" element={<TrustTag />} />
+          <Route path="/tracetag/*" element={<TraceTag />} />
+          <Route path="/trusttag/*" element={<LegacyTrustTagRedirect />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
