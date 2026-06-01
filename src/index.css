@@ -152,9 +152,23 @@
   to { opacity: 1; }
 }
 
-/* ============ TrustTag scope ============ */
-.trusttag {
-  --tt-bg: 0 0% 100%;
+/* ============ TraceTag Nigeria scope ============ */
+.tracetag { color: #0F172A; }
+.tracetag .bg-tt-navy { background-color: #1A3C6E; }
+.tracetag .text-tt-navy { color: #1A3C6E; }
+.tracetag .border-tt-navy { border-color: #1A3C6E; }
+.tracetag .bg-tt-red { background-color: #D32F2F; }
+.tracetag .text-tt-red { color: #D32F2F; }
+.tracetag .border-tt-red { border-color: #D32F2F; }
+.tracetag .bg-tt-green { background-color: #16A34A; }
+.tracetag .text-tt-green { color: #16A34A; }
+.tracetag .border-tt-border { border-color: #E2E8F0; }
+.tracetag .tt-gradient-hero { background: linear-gradient(135deg, #1A3C6E 0%, #2D5A9E 50%, #0F2444 100%); }
+.tracetag .bg-tt-navy\/10 { background-color: rgba(26,60,110,0.1); }
+.tracetag .bg-tt-navy\/90:hover { background-color: rgba(26,60,110,0.9); }
+
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
   --tt-fg: 222 47% 11%;
   --tt-muted: 215 14% 47%;
   --tt-border: 214 20% 91%;
