@@ -869,621 +869,404 @@ export type Database = {
         }
         Relationships: []
       }
-      tt_chat_messages: {
+      tt_business_profiles: {
         Row: {
-          body: string
+          api_key: string | null
+          business_address: string | null
+          business_email: string | null
+          business_name: string
+          business_phone: string | null
+          business_type: string
+          cac_number: string | null
+          contact_person: string | null
           created_at: string
-          flagged: boolean
+          docs: Json
           id: string
-          sanitized_body: string
-          sender_id: string | null
-          thread_id: string
+          plan: string
+          status: Database["public"]["Enums"]["tt_dealer_status"]
+          updated_at: string
+          user_id: string
         }
         Insert: {
-          body: string
+          api_key?: string | null
+          business_address?: string | null
+          business_email?: string | null
+          business_name: string
+          business_phone?: string | null
+          business_type?: string
+          cac_number?: string | null
+          contact_person?: string | null
           created_at?: string
-          flagged?: boolean
+          docs?: Json
           id?: string
-          sanitized_body?: string
-          sender_id?: string | null
-          thread_id: string
+          plan?: string
+          status?: Database["public"]["Enums"]["tt_dealer_status"]
+          updated_at?: string
+          user_id: string
         }
         Update: {
-          body?: string
+          api_key?: string | null
+          business_address?: string | null
+          business_email?: string | null
+          business_name?: string
+          business_phone?: string | null
+          business_type?: string
+          cac_number?: string | null
+          contact_person?: string | null
           created_at?: string
-          flagged?: boolean
+          docs?: Json
           id?: string
-          sanitized_body?: string
-          sender_id?: string | null
-          thread_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_chat_messages_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "tt_chat_threads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tt_chat_threads: {
-        Row: {
-          created_at: string
-          id: string
-          item_id: string | null
-          other_user_id: string | null
-          owner_id: string
-          subject: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          item_id?: string | null
-          other_user_id?: string | null
-          owner_id: string
-          subject?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          item_id?: string | null
-          other_user_id?: string | null
-          owner_id?: string
-          subject?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_chat_threads_item_id_fkey"
-            columns: ["item_id"]
-            isOneToOne: false
-            referencedRelation: "tt_items"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tt_found_reports: {
-        Row: {
-          created_at: string
-          finder_anon_token: string | null
-          finder_user_id: string | null
-          id: string
-          location: string | null
-          lost_report_id: string
-          message: string | null
-          photo_url: string | null
-          thread_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          finder_anon_token?: string | null
-          finder_user_id?: string | null
-          id?: string
-          location?: string | null
-          lost_report_id: string
-          message?: string | null
-          photo_url?: string | null
-          thread_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          finder_anon_token?: string | null
-          finder_user_id?: string | null
-          id?: string
-          location?: string | null
-          lost_report_id?: string
-          message?: string | null
-          photo_url?: string | null
-          thread_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_found_reports_lost_report_id_fkey"
-            columns: ["lost_report_id"]
-            isOneToOne: false
-            referencedRelation: "tt_lost_reports"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tt_fraud_flags: {
-        Row: {
-          created_at: string
-          entity_id: string | null
-          entity_type: string
-          id: string
-          reason: string
-          resolved: boolean
-          severity: string
-        }
-        Insert: {
-          created_at?: string
-          entity_id?: string | null
-          entity_type: string
-          id?: string
-          reason: string
-          resolved?: boolean
-          severity?: string
-        }
-        Update: {
-          created_at?: string
-          entity_id?: string | null
-          entity_type?: string
-          id?: string
-          reason?: string
-          resolved?: boolean
-          severity?: string
+          plan?: string
+          status?: Database["public"]["Enums"]["tt_dealer_status"]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
       tt_items: {
         Row: {
+          additional_identifiers: string | null
           brand: string | null
-          category: string | null
+          chassis_number: string | null
+          color: string | null
           created_at: string
-          description: string | null
+          engine_number: string | null
+          frame_number: string | null
           id: string
+          imei_1: string | null
+          imei_2: string | null
+          item_category: string
+          item_name: string
+          item_photos: Json
+          kva_rating: string | null
+          mac_address: string | null
           model: string | null
-          name: string
           owner_id: string
-          photos: Json
-          product_id: string | null
+          plate_number: string | null
           purchase_date: string | null
+          purchase_location: string | null
+          purchase_price: number | null
+          qr_url: string | null
+          screen_size: string | null
           serial_number: string | null
-          status: string
+          status: Database["public"]["Enums"]["tt_item_status"]
           updated_at: string
+          vin: string | null
+          vivesa_asset_id: string | null
         }
         Insert: {
+          additional_identifiers?: string | null
           brand?: string | null
-          category?: string | null
+          chassis_number?: string | null
+          color?: string | null
           created_at?: string
-          description?: string | null
+          engine_number?: string | null
+          frame_number?: string | null
           id?: string
+          imei_1?: string | null
+          imei_2?: string | null
+          item_category?: string
+          item_name: string
+          item_photos?: Json
+          kva_rating?: string | null
+          mac_address?: string | null
           model?: string | null
-          name: string
           owner_id: string
-          photos?: Json
-          product_id?: string | null
+          plate_number?: string | null
           purchase_date?: string | null
+          purchase_location?: string | null
+          purchase_price?: number | null
+          qr_url?: string | null
+          screen_size?: string | null
           serial_number?: string | null
-          status?: string
+          status?: Database["public"]["Enums"]["tt_item_status"]
           updated_at?: string
+          vin?: string | null
+          vivesa_asset_id?: string | null
         }
         Update: {
+          additional_identifiers?: string | null
           brand?: string | null
-          category?: string | null
+          chassis_number?: string | null
+          color?: string | null
           created_at?: string
-          description?: string | null
+          engine_number?: string | null
+          frame_number?: string | null
           id?: string
+          imei_1?: string | null
+          imei_2?: string | null
+          item_category?: string
+          item_name?: string
+          item_photos?: Json
+          kva_rating?: string | null
+          mac_address?: string | null
           model?: string | null
-          name?: string
           owner_id?: string
-          photos?: Json
-          product_id?: string | null
+          plate_number?: string | null
           purchase_date?: string | null
+          purchase_location?: string | null
+          purchase_price?: number | null
+          qr_url?: string | null
+          screen_size?: string | null
           serial_number?: string | null
-          status?: string
+          status?: Database["public"]["Enums"]["tt_item_status"]
           updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_items_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "tt_products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tt_lost_reports: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          item_id: string
-          last_location: string | null
-          reported_by: string
-          reward_amount: number | null
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          item_id: string
-          last_location?: string | null
-          reported_by: string
-          reward_amount?: number | null
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          item_id?: string
-          last_location?: string | null
-          reported_by?: string
-          reward_amount?: number | null
-          status?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_lost_reports_item_id_fkey"
-            columns: ["item_id"]
-            isOneToOne: false
-            referencedRelation: "tt_items"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tt_manufacturers: {
-        Row: {
-          company_name: string
-          created_at: string
-          description: string | null
-          id: string
-          logo_url: string | null
-          updated_at: string
-          user_id: string
-          verification_status: string
-          verified: boolean
-          website: string | null
-        }
-        Insert: {
-          company_name: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          logo_url?: string | null
-          updated_at?: string
-          user_id: string
-          verification_status?: string
-          verified?: boolean
-          website?: string | null
-        }
-        Update: {
-          company_name?: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          logo_url?: string | null
-          updated_at?: string
-          user_id?: string
-          verification_status?: string
-          verified?: boolean
-          website?: string | null
+          vin?: string | null
+          vivesa_asset_id?: string | null
         }
         Relationships: []
       }
       tt_notifications: {
         Row: {
-          body: string | null
           created_at: string
           id: string
+          is_read: boolean
           link: string | null
-          read: boolean
-          title: string
+          message: string
           type: string
           user_id: string
         }
         Insert: {
-          body?: string | null
           created_at?: string
           id?: string
+          is_read?: boolean
           link?: string | null
-          read?: boolean
-          title: string
+          message: string
           type?: string
           user_id: string
         }
         Update: {
-          body?: string | null
           created_at?: string
           id?: string
+          is_read?: boolean
           link?: string | null
-          read?: boolean
-          title?: string
+          message?: string
           type?: string
           user_id?: string
         }
         Relationships: []
-      }
-      tt_ownership_history: {
-        Row: {
-          from_user: string | null
-          id: string
-          item_id: string
-          reason: string | null
-          to_user: string | null
-          transferred_at: string
-        }
-        Insert: {
-          from_user?: string | null
-          id?: string
-          item_id: string
-          reason?: string | null
-          to_user?: string | null
-          transferred_at?: string
-        }
-        Update: {
-          from_user?: string | null
-          id?: string
-          item_id?: string
-          reason?: string | null
-          to_user?: string | null
-          transferred_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_ownership_history_item_id_fkey"
-            columns: ["item_id"]
-            isOneToOne: false
-            referencedRelation: "tt_items"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tt_products: {
-        Row: {
-          category: string | null
-          created_at: string
-          description: string | null
-          id: string
-          image_url: string | null
-          manufacturer_id: string
-          model: string | null
-          name: string
-          updated_at: string
-          warranty_months: number | null
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          manufacturer_id: string
-          model?: string | null
-          name: string
-          updated_at?: string
-          warranty_months?: number | null
-        }
-        Update: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          manufacturer_id?: string
-          model?: string | null
-          name?: string
-          updated_at?: string
-          warranty_months?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_products_manufacturer_id_fkey"
-            columns: ["manufacturer_id"]
-            isOneToOne: false
-            referencedRelation: "tt_manufacturers"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       tt_profiles: {
         Row: {
-          avatar_url: string | null
-          country: string | null
+          account_type: Database["public"]["Enums"]["tt_account_type"]
           created_at: string
+          email: string | null
           full_name: string
           id: string
+          phone_number: string | null
+          profile_photo_url: string | null
           updated_at: string
           user_id: string
+          verification_status: Database["public"]["Enums"]["tt_verification_status"]
         }
         Insert: {
-          avatar_url?: string | null
-          country?: string | null
+          account_type?: Database["public"]["Enums"]["tt_account_type"]
           created_at?: string
+          email?: string | null
           full_name?: string
           id?: string
+          phone_number?: string | null
+          profile_photo_url?: string | null
           updated_at?: string
           user_id: string
+          verification_status?: Database["public"]["Enums"]["tt_verification_status"]
         }
         Update: {
-          avatar_url?: string | null
-          country?: string | null
+          account_type?: Database["public"]["Enums"]["tt_account_type"]
           created_at?: string
+          email?: string | null
           full_name?: string
           id?: string
+          phone_number?: string | null
+          profile_photo_url?: string | null
           updated_at?: string
           user_id?: string
+          verification_status?: Database["public"]["Enums"]["tt_verification_status"]
         }
         Relationships: []
       }
-      tt_qr_batches: {
+      tt_search_logs: {
         Row: {
           created_at: string
           id: string
-          manufacturer_id: string
-          name: string
-          product_id: string | null
-          size: number
+          item_found: boolean
+          item_id: string | null
+          item_status: string | null
+          search_query: string
+          searcher_ip: string | null
+          searcher_user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
-          manufacturer_id: string
-          name: string
-          product_id?: string | null
-          size?: number
+          item_found?: boolean
+          item_id?: string | null
+          item_status?: string | null
+          search_query: string
+          searcher_ip?: string | null
+          searcher_user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
-          manufacturer_id?: string
-          name?: string
-          product_id?: string | null
-          size?: number
+          item_found?: boolean
+          item_id?: string | null
+          item_status?: string | null
+          search_query?: string
+          searcher_ip?: string | null
+          searcher_user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "tt_qr_batches_manufacturer_id_fkey"
-            columns: ["manufacturer_id"]
-            isOneToOne: false
-            referencedRelation: "tt_manufacturers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tt_qr_batches_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "tt_products"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      tt_qr_codes: {
+      tt_stolen_reports: {
         Row: {
-          batch_id: string | null
+          additional_description: string | null
+          circumstance: string | null
+          created_at: string
+          date_stolen: string | null
+          id: string
+          item_id: string
+          lga_stolen: string | null
+          location_stolen: string | null
+          police_doc_url: string | null
+          police_report_number: string | null
+          police_state: string | null
+          police_station: string | null
+          reported_by: string
+          reward_amount: number | null
+          reward_offered: boolean
+          state_stolen: string | null
+          status: string
+          time_stolen: string | null
+        }
+        Insert: {
+          additional_description?: string | null
+          circumstance?: string | null
+          created_at?: string
+          date_stolen?: string | null
+          id?: string
+          item_id: string
+          lga_stolen?: string | null
+          location_stolen?: string | null
+          police_doc_url?: string | null
+          police_report_number?: string | null
+          police_state?: string | null
+          police_station?: string | null
+          reported_by: string
+          reward_amount?: number | null
+          reward_offered?: boolean
+          state_stolen?: string | null
+          status?: string
+          time_stolen?: string | null
+        }
+        Update: {
+          additional_description?: string | null
+          circumstance?: string | null
+          created_at?: string
+          date_stolen?: string | null
+          id?: string
+          item_id?: string
+          lga_stolen?: string | null
+          location_stolen?: string | null
+          police_doc_url?: string | null
+          police_report_number?: string | null
+          police_state?: string | null
+          police_station?: string | null
+          reported_by?: string
+          reward_amount?: number | null
+          reward_offered?: boolean
+          state_stolen?: string | null
+          status?: string
+          time_stolen?: string | null
+        }
+        Relationships: []
+      }
+      tt_tips: {
+        Row: {
           created_at: string
           id: string
           item_id: string | null
-          product_id: string | null
-          scan_count: number
-          token: string
-        }
-        Insert: {
-          batch_id?: string | null
-          created_at?: string
-          id?: string
-          item_id?: string | null
-          product_id?: string | null
-          scan_count?: number
-          token: string
-        }
-        Update: {
-          batch_id?: string | null
-          created_at?: string
-          id?: string
-          item_id?: string | null
-          product_id?: string | null
-          scan_count?: number
-          token?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tt_qr_codes_batch_id_fkey"
-            columns: ["batch_id"]
-            isOneToOne: false
-            referencedRelation: "tt_qr_batches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tt_qr_codes_item_id_fkey"
-            columns: ["item_id"]
-            isOneToOne: false
-            referencedRelation: "tt_items"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tt_qr_codes_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "tt_products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tt_scans: {
-        Row: {
-          created_at: string
-          id: string
-          ip_city: string | null
-          ip_country: string | null
-          qr_code_id: string | null
-          result: string
-          scanner_user_id: string | null
-          token: string | null
-          user_agent: string | null
+          photo_urls: Json
+          search_query: string | null
+          seller_contact: string | null
+          seller_location: string | null
+          seller_platform: string | null
+          status: Database["public"]["Enums"]["tt_tip_status"]
+          submitted_by: string | null
+          submitter_ip: string | null
+          tip_description: string
         }
         Insert: {
           created_at?: string
           id?: string
-          ip_city?: string | null
-          ip_country?: string | null
-          qr_code_id?: string | null
-          result?: string
-          scanner_user_id?: string | null
-          token?: string | null
-          user_agent?: string | null
+          item_id?: string | null
+          photo_urls?: Json
+          search_query?: string | null
+          seller_contact?: string | null
+          seller_location?: string | null
+          seller_platform?: string | null
+          status?: Database["public"]["Enums"]["tt_tip_status"]
+          submitted_by?: string | null
+          submitter_ip?: string | null
+          tip_description: string
         }
         Update: {
           created_at?: string
           id?: string
-          ip_city?: string | null
-          ip_country?: string | null
-          qr_code_id?: string | null
-          result?: string
-          scanner_user_id?: string | null
-          token?: string | null
-          user_agent?: string | null
+          item_id?: string | null
+          photo_urls?: Json
+          search_query?: string | null
+          seller_contact?: string | null
+          seller_location?: string | null
+          seller_platform?: string | null
+          status?: Database["public"]["Enums"]["tt_tip_status"]
+          submitted_by?: string | null
+          submitter_ip?: string | null
+          tip_description?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "tt_scans_qr_code_id_fkey"
-            columns: ["qr_code_id"]
-            isOneToOne: false
-            referencedRelation: "tt_qr_codes"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       tt_transfers: {
         Row: {
           created_at: string
-          from_user: string
+          from_user_id: string
           id: string
           item_id: string
-          status: string
-          to_user_email: string
+          sale_price: number | null
+          status: Database["public"]["Enums"]["tt_transfer_status"]
+          to_user_email: string | null
           to_user_id: string | null
-          token: string
+          to_user_phone: string | null
+          transfer_notes: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
-          from_user: string
+          from_user_id: string
           id?: string
           item_id: string
-          status?: string
-          to_user_email: string
+          sale_price?: number | null
+          status?: Database["public"]["Enums"]["tt_transfer_status"]
+          to_user_email?: string | null
           to_user_id?: string | null
-          token: string
+          to_user_phone?: string | null
+          transfer_notes?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
-          from_user?: string
+          from_user_id?: string
           id?: string
           item_id?: string
-          status?: string
-          to_user_email?: string
+          sale_price?: number | null
+          status?: Database["public"]["Enums"]["tt_transfer_status"]
+          to_user_email?: string | null
           to_user_id?: string | null
-          token?: string
+          to_user_phone?: string | null
+          transfer_notes?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "tt_transfers_item_id_fkey"
-            columns: ["item_id"]
-            isOneToOne: false
-            referencedRelation: "tt_items"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       tt_user_roles: {
         Row: {
@@ -1503,6 +1286,33 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["tt_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      tt_verification_checks: {
+        Row: {
+          checked_by: string
+          created_at: string
+          id: string
+          item_id: string | null
+          item_identifier: string
+          result: string
+        }
+        Insert: {
+          checked_by: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_identifier: string
+          result: string
+        }
+        Update: {
+          checked_by?: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_identifier?: string
+          result?: string
         }
         Relationships: []
       }
@@ -1585,10 +1395,19 @@ export type Database = {
         }
         Returns: boolean
       }
-      tt_verify_qr: { Args: { _token: string }; Returns: Json }
+      tt_verify_search: {
+        Args: { _ip?: string; _query: string }
+        Returns: Json
+      }
     }
     Enums: {
-      tt_role: "user" | "manufacturer" | "admin"
+      tt_account_type: "individual" | "dealer" | "business" | "admin"
+      tt_dealer_status: "pending" | "approved" | "rejected" | "suspended"
+      tt_item_status: "clean" | "stolen" | "recovered" | "transferred"
+      tt_role: "user" | "dealer" | "admin"
+      tt_tip_status: "new" | "investigating" | "resolved" | "dismissed"
+      tt_transfer_status: "pending" | "accepted" | "rejected" | "cancelled"
+      tt_verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1716,7 +1535,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      tt_role: ["user", "manufacturer", "admin"],
+      tt_account_type: ["individual", "dealer", "business", "admin"],
+      tt_dealer_status: ["pending", "approved", "rejected", "suspended"],
+      tt_item_status: ["clean", "stolen", "recovered", "transferred"],
+      tt_role: ["user", "dealer", "admin"],
+      tt_tip_status: ["new", "investigating", "resolved", "dismissed"],
+      tt_transfer_status: ["pending", "accepted", "rejected", "cancelled"],
+      tt_verification_status: ["pending", "verified", "rejected"],
     },
   },
 } as const
